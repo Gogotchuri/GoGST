@@ -9,50 +9,63 @@ type EWBItem struct {
 	CgstRate      float64 `json:"cgstRate"`
 	SgstRate      float64 `json:"sgstRate"`
 	IgstRate      float64 `json:"igstRate"`
-	CessRate      float64 `json:"cessRate"`
-	CessNonadvol  float64 `json:"cessNonadvol"`
 	TaxableAmount float64 `json:"taxableAmount"`
+	//Ignore following 2 fields
+	CessRate     float64 `json:"cessRate"`     //Not needed for GST
+	CessNonadvol float64 `json:"cessNonadvol"` //Not needed for GST
 }
 
 type EWBCreateRequest struct {
-	SupplyType        string    `json:"supplyType"`
-	SubSupplyType     string    `json:"subSupplyType"`
-	SubSupplyDesc     string    `json:"subSupplyDesc"`
-	DocType           string    `json:"docType"`
-	DocNo             string    `json:"docNo"`
-	DocDate           string    `json:"docDate"`
-	FromGstin         string    `json:"fromGstin"`
-	FromTrdName       string    `json:"fromTrdName"`
-	FromAddr1         string    `json:"fromAddr1"`
-	FromAddr2         string    `json:"fromAddr2"`
-	FromPlace         string    `json:"fromPlace"`
-	FromPincode       int       `json:"fromPincode"`
-	ActFromStateCode  int       `json:"actFromStateCode"`
-	FromStateCode     int       `json:"fromStateCode"`
-	ToGstin           string    `json:"toGstin"`
-	ToTrdName         string    `json:"toTrdName"`
-	ToAddr1           string    `json:"toAddr1"`
-	ToAddr2           string    `json:"toAddr2"`
-	ToPlace           string    `json:"toPlace"`
-	ToPincode         int       `json:"toPincode"`
-	ActToStateCode    int       `json:"actToStateCode"`
-	ToStateCode       int       `json:"toStateCode"`
-	TransactionType   int       `json:"transactionType"`
-	OtherValue        float64   `json:"otherValue"`
-	TotalValue        float64   `json:"totalValue"`
-	CgstValue         float64   `json:"cgstValue"`
-	SgstValue         float64   `json:"sgstValue"`
-	IgstValue         float64   `json:"igstValue"`
-	CessValue         float64   `json:"cessValue"`
-	CessNonAdvolValue float64   `json:"cessNonAdvolValue"`
-	TotalInvoiceValue float64   `json:"totInvValue"`
-	TransporterId     string    `json:"transporterId"`
-	TransporterName   string    `json:"transporterName"`
-	TransDocNo        string    `json:"transDocNo"`
-	TransMode         string    `json:"transMode"`
-	TransDistance     int       `json:"transDistance"`
-	TransDocDate      string    `json:"transDocDate"`
-	VehicleNo         string    `json:"vehicleNo"`
-	VehicleType       string    `json:"vehicleType"`
-	ItemList          []EWBItem `json:"itemList"`
+	// We can use default values for these fields
+	SupplyType    string `json:"supplyType"`
+	SubSupplyType string `json:"subSupplyType"`
+	SubSupplyDesc string `json:"subSupplyDesc"`
+	// Doc Fields
+	DocType string `json:"docType"`
+	DocNo   string `json:"docNo"`
+	DocDate string `json:"docDate"`
+	// Company Info
+	FromGstin             string `json:"fromGstin"`
+	FromTrdName           string `json:"fromTrdName"`
+	FromAddr1             string `json:"fromAddr1"`
+	FromAddr2             string `json:"fromAddr2"`
+	FromPlace             string `json:"fromPlace"`
+	FromPincode           int    `json:"fromPincode"`
+	SupplierFromStateCode int    `json:"actFromStateCode"`
+	FromStateCode         int    `json:"fromStateCode"`
+	//Customer Info
+	ToGstin        string `json:"toGstin"`
+	ToTrdName      string `json:"toTrdName"`
+	ToAddr1        string `json:"toAddr1"`
+	ToAddr2        string `json:"toAddr2"`
+	ToPlace        string `json:"toPlace"`
+	ToPincode      int    `json:"toPincode"`
+	ActToStateCode int    `json:"actToStateCode"`
+	ToStateCode    int    `json:"toStateCode"`
+
+	//Autofilled
+	TransactionType int `json:"transactionType"`
+	// Amounts
+	TotalValue        float64 `json:"totalValue"`
+	OtherValue        float64 `json:"otherValue"`
+	CgstValue         float64 `json:"cgstValue"`
+	SgstValue         float64 `json:"sgstValue"`
+	IgstValue         float64 `json:"igstValue"`
+	TotalInvoiceValue float64 `json:"totInvValue"`
+
+	//Ignore following 2 fields
+	CessValue         float64 `json:"cessValue"`
+	CessNonAdvolValue float64 `json:"cessNonAdvolValue"`
+
+	//Transport Details
+	TransporterId   string `json:"transporterId"`
+	TransporterName string `json:"transporterName"`
+	TransDocNo      string `json:"transDocNo"`
+	TransMode       string `json:"transMode"`
+	TransDistance   int    `json:"transDistance"`
+	TransDocDate    string `json:"transDocDate"`
+	VehicleNo       string `json:"vehicleNo"`
+	VehicleType     string `json:"vehicleType"`
+	//Items
+	ItemList []EWBItem `json:"itemList"`
 }
