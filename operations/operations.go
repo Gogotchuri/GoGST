@@ -14,11 +14,11 @@ const (
 	baseURL = "https://my.gstzen.in/~gstzen/a/ewbapi/generate/"
 )
 
-func CreateEWaybill(ewb types.EWBCreateRequest) ([]byte, error) {
+func (c client) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error) {
 	encoded, err := json.Marshal(ewb)
 	req, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(encoded))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("can't create request: %v", err)
 	}
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Token", token)
@@ -26,16 +26,22 @@ func CreateEWaybill(ewb types.EWBCreateRequest) ([]byte, error) {
 	client := &http.Client{}
 	response, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("can't send request: %v", err)
 	}
 	defer response.Body.Close()
-
-	fmt.Println("response Status:", response.Status)
-	fmt.Println("response Headers:", response.Header)
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("response Body:", string(body))
-	return body, nil
+	if response.StatusCode >= 300 {
+		return nil, fmt.Errorf("request failed with status %s error: %s", response.Status, string(body))
+	}
+	var ewbRes types.EWBCreateResponse
+	if err := json.Unmarshal(body, &ewbRes); err != nil {
+		return nil, fmt.Errorf("can't unmarshal response: %v", err)
+	}
+	if ewbRes.Status == 0 {
+		return nil, fmt.Errorf("request failed: %s", ewbRes.Message)
+	}
+	return &ewbRes, nil
 }

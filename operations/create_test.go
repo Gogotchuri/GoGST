@@ -1,18 +1,24 @@
 package operations_test
 
 import (
+	"fmt"
 	"github.com/gogotchuri/GoGST/operations"
 	"github.com/gogotchuri/GoGST/types"
+	"math/rand"
 	"testing"
+	"time"
 )
 
 func TestCreateEWaybill(t *testing.T) {
+	client := operations.NewClient("43af8d80-5da7-4479-9b55-7fe342c9eb62",
+		"https://my.gstzen.in/~gstzen/a/ewbapi/generate/", "29AAACW6288M1ZH")
+
 	ewb := types.EWBCreateRequest{
 		SupplyType:            "O",
 		SubSupplyType:         "1",
 		SubSupplyDesc:         "",
 		DocType:               "INV",
-		DocNo:                 "SRI/04",
+		DocNo:                 "SRI/09",
 		DocDate:               "15/12/2017",
 		FromGstin:             "29AAACW6288M1ZH",
 		FromTrdName:           "welton",
@@ -31,14 +37,6 @@ func TestCreateEWaybill(t *testing.T) {
 		ActToStateCode:        29,
 		ToStateCode:           27,
 		TransactionType:       4,
-		OtherValue:            0,
-		TotalValue:            56099,
-		CgstValue:             0,
-		SgstValue:             0,
-		IgstValue:             300.67,
-		CessValue:             400.56,
-		CessNonAdvolValue:     400,
-		TotalInvoiceValue:     68358,
 		TransporterId:         "",
 		TransporterName:       "",
 		TransDocNo:            "",
@@ -52,18 +50,19 @@ func TestCreateEWaybill(t *testing.T) {
 				ProductName:   "Wheat",
 				ProductDesc:   "Wheat",
 				HsnCode:       1001,
-				Quantity:      4,
+				Quantity:      1,
 				QtyUnit:       "BOX",
-				CgstRate:      0,
-				SgstRate:      0,
-				IgstRate:      3,
-				CessRate:      3,
-				CessNonadvol:  0,
-				TaxableAmount: 56098,
+				IgstRate:      5,
+				TaxableAmount: 210,
 			},
 		},
+		TotalValue:        210,
+		IgstValue:         10.5,
+		TotalInvoiceValue: 220.5,
 	}
-	resp, err := operations.CreateEWaybill(ewb)
+	rand.Seed(time.Now().UnixNano())
+	ewb.DocNo += fmt.Sprintf("%d", rand.Intn(10000))
+	resp, err := client.CreateEWaybill(ewb)
 	if err != nil {
 		t.Error(err)
 		return
