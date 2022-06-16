@@ -1,5 +1,7 @@
 package types
 
+const CreatePath = "/generate/"
+
 type EWBItem struct {
 	ProductName   string  `json:"productName"`
 	ProductDesc   string  `json:"productDesc"`
@@ -68,4 +70,16 @@ type EWBCreateRequest struct {
 	VehicleType     string `json:"vehicleType"`
 	//Items
 	ItemList []EWBItem `json:"itemList"`
+}
+
+type EWBCreateResponse struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Alert   string `json:"alert"`
+	Info    string `json:"info"` //Set when status is 0
+
+	Uuid         string    `json:"uuid"`
+	ValidUpto    string    `json:"validUpto"`
+	EwayBillNo   EWBNumber `json:"ewayBillNo"`
+	EwayBillDate string    `json:"ewayBillDate"`
 }

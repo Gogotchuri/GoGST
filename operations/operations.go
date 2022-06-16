@@ -15,33 +15,51 @@ const (
 )
 
 func (c client) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error) {
-	encoded, err := json.Marshal(ewb)
-	req, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(encoded))
-	if err != nil {
-		return nil, fmt.Errorf("can't create request: %v", err)
-	}
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Token", token)
-	req.Header.Add("gstin", ewb.FromGstin)
-	client := &http.Client{}
-	response, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("can't send request: %v", err)
-	}
-	defer response.Body.Close()
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-	if response.StatusCode >= 300 {
-		return nil, fmt.Errorf("request failed with status %s error: %s", response.Status, string(body))
-	}
 	var ewbRes types.EWBCreateResponse
-	if err := json.Unmarshal(body, &ewbRes); err != nil {
-		return nil, fmt.Errorf("can't unmarshal response: %v", err)
+	if err := c.makeGSTZRequest(types.CreatePath, ewb, &ewbRes, c.gstin); err != nil {
+		return nil, err
 	}
 	if ewbRes.Status == 0 {
 		return nil, fmt.Errorf("request failed: %s", ewbRes.Message)
 	}
 	return &ewbRes, nil
+}
+
+func (c client) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error) {
+	var cancelRes types.EWBCancelResponse
+	if err := c.makeGSTZRequest(types.CancelPath, cancel, &cancelRes, c.gstin); err != nil {
+		return nil, err
+	}
+	if cancelRes.Status == 0 {
+		return nil, fmt.Errorf("request failed: %s", cancelRes.Message)
+	}
+	return &cancelRes, nil
+}
+
+func (c client) makeGSTZRequest(path, req, res interface{}, gstin string) error {
+	encoded, err := json.Marshal(req)
+	request, err := http.NewRequest(http.MethodPost, baseURL, bytes.NewBuffer(encoded))
+	if err != nil {
+		return fmt.Errorf("can't create request: %v", err)
+	}
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Token", token)
+	request.Header.Add("gstin", gstin)
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return fmt.Errorf("can't send request: %v", err)
+	}
+	defer response.Body.Close()
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return err
+	}
+	if response.StatusCode >= 300 {
+		return fmt.Errorf("request failed with status %s error: %s", response.Status, string(body))
+	}
+	if err := json.Unmarshal(body, res); err != nil {
+		return fmt.Errorf("can't unmarshal response: %v", err)
+	}
+	return nil
 }

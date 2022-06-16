@@ -11,12 +11,12 @@ import (
 
 func TestCreateEWaybill(t *testing.T) {
 	client := operations.NewClient("43af8d80-5da7-4479-9b55-7fe342c9eb62",
-		"https://my.gstzen.in/~gstzen/a/ewbapi/generate/", "29AAACW6288M1ZH")
+		"https://my.gstzen.in/~gstzen/a/ewbapi", "29AAACW6288M1ZH")
 
 	ewb := types.EWBCreateRequest{
 		SupplyType:            "O",
-		SubSupplyType:         "1",
-		SubSupplyDesc:         "",
+		SubSupplyType:         fmt.Sprintf("%d", types.SubSupplyType_Supply),
+		SubSupplyDesc:         "T",
 		DocType:               "INV",
 		DocNo:                 "SRI/09",
 		DocDate:               "15/12/2017",
@@ -67,5 +67,18 @@ func TestCreateEWaybill(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(resp)
+	fmt.Printf("%+v\n", resp)
+	fmt.Println("EWB Created. Starting to cancel")
+	// Cancel EWaybill
+	cancel := types.EWBCancelRequest{
+		CancelRemark:     "Didn't like the platform",
+		CancelReasonCode: 1, //tODO: cancel code enum
+		EwayBillNo:       resp.EwayBillNo,
+	}
+	if cr, err := client.CancelEWaybill(cancel); err != nil {
+		t.Error(err)
+		return
+	} else {
+		fmt.Printf("%+v\n", cr)
+	}
 }
