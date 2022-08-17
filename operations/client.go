@@ -4,6 +4,9 @@ import "github.com/gogotchuri/GoGST/types"
 
 type Client interface {
 	CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error)
+	CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error)
+
+	GetGSTIN(gstin string) (*types.GSTINResponse, error)
 }
 
 var _ Client = &client{}

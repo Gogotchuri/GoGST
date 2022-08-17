@@ -10,8 +10,10 @@ import (
 )
 
 const (
-	token   = "43af8d80-5da7-4479-9b55-7fe342c9eb62"
-	baseURL = "https://my.gstzen.in/~gstzen/a/ewbapi/generate/"
+	token                = "43af8d80-5da7-4479-9b55-7fe342c9eb62"
+	baseURL              = "https://my.gstzen.in/~gstzen/a/ewbapi/generate/"
+	vayanaBaseURL        = "https://solo.enriched-api.vayana.com"
+	vayanaOrganizationID = "5dbe13f8-c60b-48a6-8705-d734b8e134e5" //X-FLYNN-N-ORG-ID header
 )
 
 func (c client) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error) {
@@ -34,6 +36,11 @@ func (c client) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelR
 		return nil, fmt.Errorf("request failed: %s", cancelRes.Message)
 	}
 	return &cancelRes, nil
+}
+
+func (c client) GetGSTIN(gstin string) (*types.GSTINResponse, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (c client) makeGSTZRequest(path, req, res interface{}, gstin string) error {
