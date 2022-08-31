@@ -7,6 +7,7 @@ import (
 
 type Client interface {
 	Authenticate(email, password string) error
+	SetActiveToken(token string)
 	Logout() error
 
 	CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error)

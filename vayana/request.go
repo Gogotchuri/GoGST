@@ -39,6 +39,17 @@ func (c *client) makeAuthorizedRequest(method, path string, body, dest interface
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	req.Header.Set("X-FLYNN-N-USER-TOKEN", c.token)
 	req.Header.Set("X-FLYNN-N-ORG-ID", c.organizationID)
+	//TODO: Only for the first time testing
+	req.Header.Set("X-FLYNN-N-IRP-GSTIN", "29AAACW6288M1ZH")
+	req.Header.Set("X-FLYNN-N-IRP-USERNAME", "test_dlr231")
+	req.Header.Set("X-FLYNN-N-IRP-PWD", "test_dlr231")
+	req.Header.Set("X-FLYNN-N-IRP-GSP-CODE", "clayfin")
+
+	req.Header.Set("X-FLYNN-N-EWB-GSTIN", "29AAACW6288M1ZH")
+	req.Header.Set("X-FLYNN-N-EWB-USERNAME", "test_dlr231")
+	req.Header.Set("X-FLYNN-N-EWB-PWD", "test_dlr231")
+	req.Header.Set("X-FLYNN-N-EWB-GSP-CODE", "clayfin")
+
 	return c.send(req, dest, encrypt)
 }
 

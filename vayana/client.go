@@ -58,6 +58,13 @@ func (c *client) Ping() error {
 	return c.makeRequest(http.MethodGet, vayanaTypes.HealthCheck, nil, nil, false, true)
 }
 
+func (c *client) SetActiveToken(token string) {
+	c.tokenLock.Lock()
+	c.token = token
+	c.tokenExpiresAt = time.Now().Add(359 * time.Minute)
+	c.tokenLock.Unlock()
+}
+
 func (c *client) Authenticate(email, password string) error {
 	resp := vayanaTypes.AuthResponse{}
 	err := c.makeRequest(http.MethodPost, vayanaTypes.AuthTokens, vayanaTypes.AuthRequest{
@@ -74,6 +81,7 @@ func (c *client) Authenticate(email, password string) error {
 	}
 	c.tokenLock.Lock()
 	c.token = resp.Data.Token
+	fmt.Println(resp.Data.Token)
 	c.tokenExpiresAt = time.Now().Add(359 * time.Minute)
 	c.tokenLock.Unlock()
 	return nil
@@ -92,8 +100,13 @@ func (c *client) Logout() error {
 }
 
 func (c *client) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	endpoint := "/basic/ewb/v1.0/v1.03/gen-ewb"
+	resp := &types.EWBCreateResponse{}
+	err := c.makeAuthorizedRequest(http.MethodGet, endpoint, ewb, resp, false, false)
+	if err != nil {
+		return resp, err
+	}
+	return resp, nil
 }
 
 func (c *client) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error) {
