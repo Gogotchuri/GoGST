@@ -64,7 +64,7 @@ type EWBCreateRequest struct {
 	TransporterName string `json:"transporterName"`
 	TransDocNo      string `json:"transDocNo"`
 	TransMode       string `json:"transMode"`
-	TransDistance   int    `json:"transDistance"`
+	TransDistance   string `json:"transDistance"`
 	TransDocDate    string `json:"transDocDate"`
 	VehicleNo       string `json:"vehicleNo"`
 	VehicleType     string `json:"vehicleType"`
