@@ -20,7 +20,7 @@ func (c *client) getEndpointURL(endpoint string, theodore bool) string {
 	return fmt.Sprintf("%s%s", c.apiBaseURL, endpoint)
 }
 
-func (c *client) makeRequest(method, endpoint string, body, dest interface{}, encrypt, theodore bool) error {
+func (c *client) sendRequest(method, endpoint string, body, dest interface{}, encrypt, theodore bool) error {
 	req, err := c.newRequest(method, c.getEndpointURL(endpoint, theodore), body, encrypt)
 	if err != nil {
 		return err
@@ -28,7 +28,7 @@ func (c *client) makeRequest(method, endpoint string, body, dest interface{}, en
 	return c.send(req, dest, encrypt)
 }
 
-func (c *client) makeAuthorizedRequest(method, path string, body, dest interface{}, encrypt, theodore bool) error {
+func (c *client) sendAuthorizedRequest(method, path string, body, dest interface{}, encrypt, theodore bool) error {
 	if ok, err := c.isAuthenticated(); !ok {
 		return fmt.Errorf("token is empty, athenticate first. %s", err.Error())
 	}
@@ -40,16 +40,22 @@ func (c *client) makeAuthorizedRequest(method, path string, body, dest interface
 	req.Header.Set("X-FLYNN-N-USER-TOKEN", c.token)
 	req.Header.Set("X-FLYNN-N-ORG-ID", c.organizationID)
 	//TODO: Only for the first time testing
-	req.Header.Set("X-FLYNN-N-IRP-GSTIN", "29AAACW6288M1ZH")
-	req.Header.Set("X-FLYNN-N-IRP-USERNAME", "test_dlr231")
-	req.Header.Set("X-FLYNN-N-IRP-PWD", "test_dlr231")
-	req.Header.Set("X-FLYNN-N-IRP-GSP-CODE", "clayfin")
-
 	req.Header.Set("X-FLYNN-N-EWB-GSTIN", "29AAACW6288M1ZH")
 	req.Header.Set("X-FLYNN-N-EWB-USERNAME", "test_dlr231")
 	req.Header.Set("X-FLYNN-N-EWB-PWD", "test_dlr231")
 	req.Header.Set("X-FLYNN-N-EWB-GSP-CODE", "clayfin")
-
+	if !theodore {
+		destRaw := &vayanaTypes.DataResponse{}
+		err = c.send(req, destRaw, encrypt)
+		if err != nil {
+			return err
+		}
+		err = json.Unmarshal(destRaw.GetData(), dest)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
 	return c.send(req, dest, encrypt)
 }
 
@@ -100,6 +106,7 @@ func (c *client) send(req *http.Request, dest interface{}, decrypt bool) error {
 	//		return err
 	//	}
 	//}
+	fmt.Println(string(data))
 	buf := bytes.NewBuffer(data)
 	return json.NewDecoder(buf).Decode(dest)
 }
@@ -110,6 +117,7 @@ func (c *client) newRequest(method, url string, payload interface{}, encrypt boo
 	var encryptedRek, encryptedData []byte
 	if payload != nil {
 		b, err := json.Marshal(&payload)
+		fmt.Println(string(b))
 		if err != nil {
 			return nil, err
 		}

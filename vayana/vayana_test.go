@@ -27,8 +27,8 @@ func TestClient_Authenticate(t *testing.T) {
 
 func TestClient_GetGSTINDetails(t *testing.T) {
 	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
-	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MTk3NDA3NCwiaWF0IjoxNjYxOTUyNDc0fQ.eF6YhM8A-PVVSzv3X1pCpS0Xknw9lOFQozSWXhEo5a0lFQhpIoSITsSda-zYD10VCc_3KE6IrvwuP8_kXVUwBOMeOR_pZCa3ZnQGTsrslWyHK0rKXpbKLE0S1GRmDMgWPX2Z0Vw-atZ5ZlGvffyvGLfESse2BER6Hi_OjqLDnQhJE3s-06wxPOr6UwUJ4Vy7Q4dOFCHzPdTgvcYWh6QJ-VGglXnTHJzrh4yV8sdTUEVmSmR9Pe2JWvvVWWvPILLYL0AqIDSzhn4enBw1kq52wszDGWF5iXNEXtEUG0VrRtwC259ldtKsKwPhFcd4WQow49GKwA2ss9BCNURKD74ucg")
-	resp, err := client.GetGSTINDetails("27AAAPI3182M002")
+	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjAzMzk2MSwiaWF0IjoxNjYyMDEyMzYxfQ.akPq4rK3IW-NSUzXmvYK6vG0Hr436VwHS05IJcB2G6yHpV2bTtNNO0HZemLWMo2Lmjn5rEyfUfy3M8o-u7wkgSDVrhwx31tYw3-8RfXCRIgm_Ozm3AgezW-9XaK3eNbcNVP5X0wVAXPFHyAls2r6ONbzOaj7NLC4YGEO-ryRzLnFDUl8DfuSJfZjB7m8bhY32jts7xtKXbX6QzfLJvwjxBJNDSYcM3dUuCK_Ivw_DdERVPG3qCommI37KOXpo4PE9Ox0YTUW0VtU9p64s-CLogBzsK0SB3PgQYtVcs6Opx0bd3ew2inRZMRqfeKrfVh7zavmNfVuSwkoWwp1RWDeRQ")
+	resp, err := client.GetGSTINDetails("29AKLPM8755F1Z2")
 	if err != nil {
 		t.Error(err)
 	}
@@ -37,7 +37,7 @@ func TestClient_GetGSTINDetails(t *testing.T) {
 
 func TestClient_GenerateEWB(t *testing.T) {
 	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
-	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MTk3NDA3NCwiaWF0IjoxNjYxOTUyNDc0fQ.eF6YhM8A-PVVSzv3X1pCpS0Xknw9lOFQozSWXhEo5a0lFQhpIoSITsSda-zYD10VCc_3KE6IrvwuP8_kXVUwBOMeOR_pZCa3ZnQGTsrslWyHK0rKXpbKLE0S1GRmDMgWPX2Z0Vw-atZ5ZlGvffyvGLfESse2BER6Hi_OjqLDnQhJE3s-06wxPOr6UwUJ4Vy7Q4dOFCHzPdTgvcYWh6QJ-VGglXnTHJzrh4yV8sdTUEVmSmR9Pe2JWvvVWWvPILLYL0AqIDSzhn4enBw1kq52wszDGWF5iXNEXtEUG0VrRtwC259ldtKsKwPhFcd4WQow49GKwA2ss9BCNURKD74ucg")
+	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjAzMzk2MSwiaWF0IjoxNjYyMDEyMzYxfQ.akPq4rK3IW-NSUzXmvYK6vG0Hr436VwHS05IJcB2G6yHpV2bTtNNO0HZemLWMo2Lmjn5rEyfUfy3M8o-u7wkgSDVrhwx31tYw3-8RfXCRIgm_Ozm3AgezW-9XaK3eNbcNVP5X0wVAXPFHyAls2r6ONbzOaj7NLC4YGEO-ryRzLnFDUl8DfuSJfZjB7m8bhY32jts7xtKXbX6QzfLJvwjxBJNDSYcM3dUuCK_Ivw_DdERVPG3qCommI37KOXpo4PE9Ox0YTUW0VtU9p64s-CLogBzsK0SB3PgQYtVcs6Opx0bd3ew2inRZMRqfeKrfVh7zavmNfVuSwkoWwp1RWDeRQ")
 	resp, err := client.CreateEWaybill(types.EWBCreateRequest{
 		SupplyType:            "O",
 		SubSupplyType:         "1",
@@ -52,7 +52,7 @@ func TestClient_GenerateEWB(t *testing.T) {
 		FromPincode:           560090,
 		FromStateCode:         29,
 		SupplierFromStateCode: 29,
-		ToGstin:               "",
+		ToGstin:               "28AAACW6288M1ZH",
 		ToTrdName:             "sthuthya",
 		ToAddr1:               "Shree Nilaya",
 		ToAddr2:               "Dasarahosahalli",

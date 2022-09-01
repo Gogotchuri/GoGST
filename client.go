@@ -13,6 +13,6 @@ type Client interface {
 	CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error)
 	CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error)
 
-	GetGSTINDetails(gstin string) (*vayanaTypes.GSTINDetailsResponse, error)
+	GetGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error)
 	Ping() error
 }

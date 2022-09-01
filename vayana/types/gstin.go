@@ -1,19 +1,27 @@
 package vayanaTypes
 
-type GSTINDetailsResponse struct {
-	Gstin     string      `json:"Gstin"`
-	TradeName interface{} `json:"TradeName"`
-	LegalName string      `json:"LegalName"`
-	StateCode string      `json:"StateCode"`
-	AddrBnm   interface{} `json:"AddrBnm"`
-	AddrBno   interface{} `json:"AddrBno"`
-	AddrFlno  interface{} `json:"AddrFlno"`
-	AddrSt    interface{} `json:"AddrSt"`
-	AddrLoc   interface{} `json:"AddrLoc"`
-	TxpType   interface{} `json:"TxpType"`
-	BlkStatus interface{} `json:"BlkStatus"`
-	Status    string      `json:"Status"`
-	AddrPncd  int         `json:"AddrPncd"`
-	DtReg     interface{} `json:"DtReg"`
-	DtDReg    interface{} `json:"DtDReg"`
+import "strings"
+
+type DataResponse struct {
+	Data string `json:"data"`
+}
+
+func (d *DataResponse) GetData() []byte {
+	d.Data = strings.ReplaceAll(d.Data, "\\", "")
+	d.Data = strings.ReplaceAll(d.Data, "\"{", "{")
+	d.Data = strings.ReplaceAll(d.Data, "}\"", "}")
+	return []byte(d.Data)
+}
+
+type GSTINDetails struct {
+	Gstin     string `json:"gstin"`
+	TradeName string `json:"tradeName"`
+	LegalName string `json:"legalName"`
+	Address1  string `json:"address1"`
+	Address2  string `json:"address2"`
+	StateCode string `json:"stateCode"`
+	PinCode   string `json:"pinCode"`
+	TxpType   string `json:"txpType"`
+	Status    string `json:"status"`
+	BlkStatus string `json:"blkStatus"`
 }

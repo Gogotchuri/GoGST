@@ -55,7 +55,7 @@ func NewClient(baseURL, theodoreBaseURL, organizationID, publicKey, rek, version
 }
 
 func (c *client) Ping() error {
-	return c.makeRequest(http.MethodGet, vayanaTypes.HealthCheck, nil, nil, false, true)
+	return c.sendRequest(http.MethodGet, vayanaTypes.HealthCheck, nil, nil, false, true)
 }
 
 func (c *client) SetActiveToken(token string) {
@@ -67,7 +67,7 @@ func (c *client) SetActiveToken(token string) {
 
 func (c *client) Authenticate(email, password string) error {
 	resp := vayanaTypes.AuthResponse{}
-	err := c.makeRequest(http.MethodPost, vayanaTypes.AuthTokens, vayanaTypes.AuthRequest{
+	err := c.sendRequest(http.MethodPost, vayanaTypes.AuthTokens, vayanaTypes.AuthRequest{
 		HandleType:          "email",
 		Handle:              email,
 		Password:            password,
@@ -88,7 +88,7 @@ func (c *client) Authenticate(email, password string) error {
 }
 
 func (c *client) Logout() error {
-	err := c.makeAuthorizedRequest(http.MethodPost, vayanaTypes.Logout, nil, nil, false, true)
+	err := c.sendAuthorizedRequest(http.MethodPost, vayanaTypes.Logout, nil, nil, false, true)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (c *client) Logout() error {
 func (c *client) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error) {
 	endpoint := "/basic/ewb/v1.0/v1.03/gen-ewb"
 	resp := &types.EWBCreateResponse{}
-	err := c.makeAuthorizedRequest(http.MethodGet, endpoint, ewb, resp, false, false)
+	err := c.sendAuthorizedRequest(http.MethodGet, endpoint, ewb, resp, false, false)
 	if err != nil {
 		return resp, err
 	}
