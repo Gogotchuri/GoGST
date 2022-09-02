@@ -20,41 +20,41 @@ func (c *client) getEndpointURL(endpoint string, theodore bool) string {
 	return fmt.Sprintf("%s%s", c.apiBaseURL, endpoint)
 }
 
-func (c *client) sendRequest(method, endpoint string, body, dest interface{}, encrypt, theodore bool) error {
+func (c *client) sendRequest(method, endpoint string, body, dest interface{}, encrypt, theodore bool) (error, *vayanaTypes.Error) {
 	req, err := c.newRequest(method, c.getEndpointURL(endpoint, theodore), body, encrypt)
 	if err != nil {
-		return err
+		return err, nil
 	}
 	return c.send(req, dest, encrypt)
 }
 
-func (c *client) sendAuthorizedRequest(method, path string, body, dest interface{}, encrypt, theodore bool) error {
+func (c *client) sendAuthorizedRequest(method, path string, body, dest interface{}, encrypt, theodore bool) (error, *vayanaTypes.Error) {
 	if ok, err := c.isAuthenticated(); !ok {
-		return fmt.Errorf("token is empty, athenticate first. %s", err.Error())
+		return fmt.Errorf("token is empty, athenticate first. %s", err.Error()), nil
 	}
 	req, err := c.newRequest(method, c.getEndpointURL(path, theodore), body, encrypt)
 	if err != nil {
-		return err
+		return err, nil
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	req.Header.Set("X-FLYNN-N-USER-TOKEN", c.token)
 	req.Header.Set("X-FLYNN-N-ORG-ID", c.organizationID)
 	//TODO: Only for the first time testing
-	req.Header.Set("X-FLYNN-N-EWB-GSTIN", "29AAACW6288M1ZH")
-	req.Header.Set("X-FLYNN-N-EWB-USERNAME", "test_dlr231")
-	req.Header.Set("X-FLYNN-N-EWB-PWD", "test_dlr231")
+	req.Header.Set("X-FLYNN-N-EWB-GSTIN", "29AAACW4202F1ZM")
+	req.Header.Set("X-FLYNN-N-EWB-USERNAME", "test_dlr228")
+	req.Header.Set("X-FLYNN-N-EWB-PWD", "test_dlr228")
 	req.Header.Set("X-FLYNN-N-EWB-GSP-CODE", "clayfin")
 	if !theodore {
 		destRaw := &vayanaTypes.DataResponse{}
-		err = c.send(req, destRaw, encrypt)
+		err, vErr := c.send(req, destRaw, encrypt)
 		if err != nil {
-			return err
+			return err, vErr
 		}
 		err = json.Unmarshal(destRaw.GetData(), dest)
 		if err != nil {
-			return err
+			return err, nil
 		}
-		return nil
+		return nil, nil
 	}
 	return c.send(req, dest, encrypt)
 }
@@ -63,7 +63,7 @@ func (c *client) sendAuthorizedRequest(method, path string, body, dest interface
 /** send makes a request to the API, the response body will be unmarshalled into v,
 which should be correct struct for the given request body passed by reference or
 it can be an io.Writer, in which case the response bytes will be written to it */
-func (c *client) send(req *http.Request, dest interface{}, decrypt bool) error {
+func (c *client) send(req *http.Request, dest interface{}, decrypt bool) (error, *vayanaTypes.Error) {
 	var (
 		err  error
 		resp *http.Response
@@ -76,7 +76,7 @@ func (c *client) send(req *http.Request, dest interface{}, decrypt bool) error {
 
 	resp, err = c.httpClient.Do(req)
 	if err != nil {
-		return err
+		return err, nil
 	}
 
 	defer resp.Body.Close()
@@ -85,30 +85,34 @@ func (c *client) send(req *http.Request, dest interface{}, decrypt bool) error {
 		data, err = io.ReadAll(resp.Body)
 		fmt.Println(string(data))
 		if err == nil && len(data) > 0 {
-			return fmt.Errorf("%d: %s \n%s", resp.StatusCode, "Request Failed", string(data))
+			var vayanaError vayanaTypes.ErrorResponse
+			err = json.Unmarshal(data, &vayanaError)
+			if err == nil {
+				return fmt.Errorf("%d: %s \n%s", resp.StatusCode, "Request Failed", string(data)), &vayanaError.Error
+			}
+			return fmt.Errorf("%d: %s \n%s", resp.StatusCode, "Request Failed", string(data)), nil
 		}
-		return fmt.Errorf("%d: %s", resp.StatusCode, "Request Failed")
+		return fmt.Errorf("%d: %s", resp.StatusCode, "Request Failed"), nil
 	}
 	if dest == nil {
-		return nil
+		return nil, nil
 	}
 	if w, ok := dest.(io.Writer); ok {
 		io.Copy(w, resp.Body)
-		return nil
+		return nil, nil
 	}
 	data, err = io.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return err, nil
 	}
-	//if decrypt {
-	//	data, err = c.decryptData(data)
-	//	if err != nil {
-	//		return err
-	//	}
-	//}
-	fmt.Println(string(data))
+	if decrypt {
+		data, err = c.decryptData(data)
+		if err != nil {
+			return err, nil
+		}
+	}
 	buf := bytes.NewBuffer(data)
-	return json.NewDecoder(buf).Decode(dest)
+	return json.NewDecoder(buf).Decode(dest), nil
 }
 
 // newRequest constructs a new http.Request, Marshal payload to json bytes

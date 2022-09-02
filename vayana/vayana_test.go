@@ -37,62 +37,70 @@ func TestClient_GetGSTINDetails(t *testing.T) {
 
 func TestClient_GenerateEWB(t *testing.T) {
 	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
-	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjA2MTE1NywiaWF0IjoxNjYyMDM5NTU3fQ.S4k22KHAUHPAw_rno-Nqr2CW_OLM5uNoqqsAAFVv2zMUNwYYQQxoWXa8HRqAL5oMGumBQmaRFMiwDDnt-gqx-oJxlV0P3rNDgWvHPmXxpLJVxPtE6aHZs-Vhcbc3MOmSmfgDnCTNwgm43GLMkBEH-TpMexfSoNAAz6Zp0Ph4pPzuNYOmWcuP-VxBsueaWCGx3FPuKhc_BKNmMMl4tfnE-mqE3OuL6yxYUD6M7-Bf0oWmo6Uj2UuY-n4-HHRxFHNGMy1Dol5nDFJ3tHaMVkWBqte3O119jkf33LL3sjSMTlh49ssTUUZmUuUDsictagAVSO4sOIye5ig42wtj6YuuYw")
+	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjExMzg1OSwiaWF0IjoxNjYyMDkyMjU5fQ.gy3oxyOcVyUJBivWhh24rTka9euI1eZgjnpUfKw4T3jmNfxRw0dlNzaTKgaed8oP56RUnKqHBlFmrnrHGnDJ--lzaypK41Tf1Xqt6uJBXCAqnDqY71R5lKft82vbPHlOT5eensIwrww5YtkkejSVc32ashjNZdknybUvQkjRdeIvk8Y3Qw2aSxUTiCvPo31lfaEEAyzjl3GxbhvA98gKjFd5eShCvTMNCirU5pgAUkptxO_cYeXj0Kqe-DzqM-2VZBESoKVK-DM7jyju8aidY__wd3_eazbz0l5pBVrSefK5WmUNiG_2LxYBExVC9PB4fD2xHvONTZgCP1dzeLi5Dw")
 	resp, err := client.CreateEWaybill(types.EWBCreateRequest{
-		SupplyType:            "O",
-		SubSupplyType:         "1",
-		DocType:               "INV",
-		DocNo:                 "7001-8",
-		DocDate:               "15/05/2022",
-		FromGstin:             "29AAACW4202F1ZM",
-		FromTrdName:           "welton",
-		FromAddr1:             "2ND CROSS NO 59  19  A",
-		FromAddr2:             "GROUND FLOOR OSBORNE ROAD",
-		FromPlace:             "FRAZER TOWN",
-		FromPincode:           560090,
-		FromStateCode:         29,
-		SupplierFromStateCode: 29,
-		ToGstin:               "29AEKPV7203E1Z9",
-		ToTrdName:             "sthuthya",
-		ToAddr1:               "Shree Nilaya",
-		ToAddr2:               "Dasarahosahalli",
-		ToPlace:               "Beml Nagar",
-		ToPincode:             560090,
-		ToStateCode:           27,
-		ActToStateCode:        27,
-		TransactionType:       4,
-		OtherValue:            100,
-		TotalValue:            56099,
-		CgstValue:             0,
-		SgstValue:             0,
-		IgstValue:             300,
-		CessValue:             400,
-		CessNonAdvolValue:     400,
-		TotalInvoiceValue:     68358,
-		TransMode:             "1",
-		VehicleNo:             "PVC1234",
-		TransDistance:         "100",
-		VehicleType:           "R",
-		TransporterId:         "29AAACW6874H1ZS",
-		TransDocDate:          "15/05/2022",
-		ItemList: []types.EWBItem{
-			{
-				ProductName:   "Wheat",
-				ProductDesc:   "Wheat",
-				HsnCode:       1001,
-				Quantity:      4,
-				QtyUnit:       "BOX",
-				CgstRate:      0,
-				SgstRate:      0,
-				IgstRate:      3,
-				TaxableAmount: 56098.89,
-				CessRate:      3,
-				CessNonadvol:  0,
+		EWBBase: types.EWBBase{
+			SupplyType:            "O",
+			SubSupplyType:         "1",
+			DocType:               "INV",
+			DocNo:                 "7001-47",
+			DocDate:               "15/05/2022",
+			FromGstin:             "29AAACW4202F1ZM",
+			FromTrdName:           "welton",
+			FromAddr1:             "2ND CROSS NO 59  19  A",
+			FromAddr2:             "GROUND FLOOR OSBORNE ROAD",
+			FromPlace:             "FRAZER TOWN",
+			FromPincode:           560090,
+			FromStateCode:         29,
+			SupplierFromStateCode: 29,
+			ToGstin:               "29AEKPV7203E1Z9",
+			ToTrdName:             "sthuthya",
+			ToAddr1:               "Shree Nilaya",
+			ToAddr2:               "Dasarahosahalli",
+			ToPlace:               "Beml Nagar",
+			ToPincode:             516101,
+			ToStateCode:           37,
+			ActToStateCode:        37,
+			TransactionType:       4,
+			OtherValue:            100,
+			TotalValue:            56099,
+			CgstValue:             0,
+			SgstValue:             0,
+			IgstValue:             300,
+			CessValue:             400,
+			CessNonAdvolValue:     400,
+			TotalInvoiceValue:     68358,
+			VehicleType:           "R",
+			TransporterId:         "29AAACW6874H1ZS",
+			ItemList: []types.EWBItem{
+				{
+					ProductName:   "Wheat",
+					ProductDesc:   "Wheat",
+					HsnCode:       1001,
+					Quantity:      4,
+					QtyUnit:       "BOX",
+					CgstRate:      0,
+					SgstRate:      0,
+					IgstRate:      3,
+					TaxableAmount: 56098.89,
+					CessRate:      3,
+					CessNonadvol:  0,
+				},
 			},
 		},
+		TransMode:     "1",
+		VehicleNo:     "PVC1234",
+		TransDistance: "100",
+		TransDocDate:  "15/05/2022",
 	})
 	if err != nil {
 		t.Error(err)
+		return
 	}
-	t.Log(resp)
+	t.Logf("%+v", resp)
+	ewb, err := client.GetEWayBill(resp.EwayBillNo)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Logf("%+v", ewb)
 }

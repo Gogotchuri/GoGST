@@ -25,7 +25,7 @@ func (c *client) isAuthenticated() (bool, error) {
 
 func (c *client) refreshToken() error {
 	req := vayanaTypes.AuthResponse{}
-	if err := c.sendAuthorizedRequest(http.MethodPut, vayanaTypes.AuthTokens, nil, &req, false, true); err != nil {
+	if err, _ := c.sendAuthorizedRequest(http.MethodPut, vayanaTypes.AuthTokens, nil, &req, false, true); err != nil {
 		return err
 	}
 	if req.Error != nil {

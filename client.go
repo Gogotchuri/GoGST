@@ -11,6 +11,7 @@ type Client interface {
 	Logout() error
 
 	CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error)
+	GetEWayBill(ewbNo string) (*types.EWBGetResponse, error)
 	CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error)
 
 	GetGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error)

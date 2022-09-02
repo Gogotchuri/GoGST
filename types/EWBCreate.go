@@ -17,15 +17,15 @@ type EWBItem struct {
 	CessNonadvol float64 `json:"cessNonadvol"` //Not needed for GST
 }
 
-type EWBCreateRequest struct {
+type EWBBase struct {
 	// We can use default values for these fields
 	SupplyType    string `json:"supplyType"`
 	SubSupplyType string `json:"subSupplyType"`
 	SubSupplyDesc string `json:"subSupplyDesc"`
 	// Doc Fields
 	DocType string `json:"docType"`
-	DocNo   string `json:"docNo"`
 	DocDate string `json:"docDate"`
+	DocNo   string `json:"docNo"`
 	// Company Info
 	FromGstin             string `json:"fromGstin"`
 	FromTrdName           string `json:"fromTrdName"`
@@ -44,9 +44,9 @@ type EWBCreateRequest struct {
 	ToPincode      int    `json:"toPincode"`
 	ActToStateCode int    `json:"actToStateCode"`
 	ToStateCode    int    `json:"toStateCode"`
-
-	//Autofilled
+	//autofilled
 	TransactionType int `json:"transactionType"`
+	//amounts
 	// Amounts
 	TotalValue        float64 `json:"totalValue"`
 	OtherValue        float64 `json:"otherValue"`
@@ -62,14 +62,18 @@ type EWBCreateRequest struct {
 	//Transport Details
 	TransporterId   string `json:"transporterId"`
 	TransporterName string `json:"transporterName"`
-	TransDocNo      string `json:"transDocNo"`
-	TransMode       string `json:"transMode"`
-	TransDistance   string `json:"transDistance"`
-	TransDocDate    string `json:"transDocDate"`
-	VehicleNo       string `json:"vehicleNo"`
 	VehicleType     string `json:"vehicleType"`
 	//Items
 	ItemList []EWBItem `json:"itemList"`
+}
+
+type EWBCreateRequest struct {
+	EWBBase
+	TransDocNo    string `json:"transDocNo"`
+	TransMode     string `json:"transMode"`
+	TransDistance string `json:"transDistance"`
+	TransDocDate  string `json:"transDocDate"`
+	VehicleNo     string `json:"vehicleNo"`
 }
 
 type EWBCreateResponse struct {
@@ -78,8 +82,31 @@ type EWBCreateResponse struct {
 	Alert   string `json:"alert"`
 	Info    string `json:"info"` //Set when status is 0
 
-	Uuid         string    `json:"uuid"`
-	ValidUpto    string    `json:"validUpto"`
-	EwayBillNo   EWBNumber `json:"ewayBillNo"`
-	EwayBillDate string    `json:"ewayBillDate"`
+	Uuid         string `json:"uuid"`
+	ValidUpto    string `json:"validUpto"`
+	EwayBillNo   string `json:"ewayBillNo"`
+	EwayBillDate string `json:"ewayBillDate"`
+}
+
+type EWBGetResponse struct {
+	EWBBase
+	NoValidDays        int              `json:"noValidDays"`
+	RejectStatus       string           `json:"rejectStatus"`
+	Status             string           `json:"status"`
+	UserGstin          string           `json:"userGstin"`
+	ValidUpto          string           `json:"validUpto"`
+	VehicleListDetails []VehicleDetails `json:"VehiclListDetails"`
+}
+
+type VehicleDetails struct {
+	UpdMode          string `json:"updMode"`
+	VehicleNo        string `json:"vehicleNo"`
+	FromPlace        string `json:"fromPlace"`
+	FromState        int    `json:"fromState"`
+	TripshtNo        int    `json:"tripshtNo"`
+	UserGSTINTransin string `json:"userGSTINTransin"`
+	EnteredDate      string `json:"enteredDate"`
+	TransMode        string `json:"transMode"`
+	TransDocDate     string `json:"transDocDate"`
+	GroupNo          string `json:"groupNo"`
 }

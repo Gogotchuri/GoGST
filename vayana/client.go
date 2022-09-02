@@ -7,6 +7,7 @@ import (
 	"github.com/gogotchuri/GoGST/vayana/encription"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -55,7 +56,8 @@ func NewClient(baseURL, theodoreBaseURL, organizationID, publicKey, rek, version
 }
 
 func (c *client) Ping() error {
-	return c.sendRequest(http.MethodGet, vayanaTypes.HealthCheck, nil, nil, false, true)
+	err, _ := c.sendRequest(http.MethodGet, vayanaTypes.HealthCheck, nil, nil, false, true)
+	return err
 }
 
 func (c *client) SetActiveToken(token string) {
@@ -67,7 +69,7 @@ func (c *client) SetActiveToken(token string) {
 
 func (c *client) Authenticate(email, password string) error {
 	resp := vayanaTypes.AuthResponse{}
-	err := c.sendRequest(http.MethodPost, vayanaTypes.AuthTokens, vayanaTypes.AuthRequest{
+	err, _ := c.sendRequest(http.MethodPost, vayanaTypes.AuthTokens, vayanaTypes.AuthRequest{
 		HandleType:          "email",
 		Handle:              email,
 		Password:            password,
@@ -88,7 +90,7 @@ func (c *client) Authenticate(email, password string) error {
 }
 
 func (c *client) Logout() error {
-	err := c.sendAuthorizedRequest(http.MethodPost, vayanaTypes.Logout, nil, nil, false, true)
+	err, _ := c.sendAuthorizedRequest(http.MethodPost, vayanaTypes.Logout, nil, nil, false, true)
 	if err != nil {
 		return err
 	}
@@ -102,9 +104,13 @@ func (c *client) Logout() error {
 func (c *client) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error) {
 	endpoint := "/basic/ewb/v1.0/v1.03/gen-ewb"
 	resp := &types.EWBCreateResponse{}
-	err := c.sendAuthorizedRequest(http.MethodGet, endpoint, ewb, resp, false, false)
+	err, vErr := c.sendAuthorizedRequest(http.MethodPost, endpoint, ewb, resp, false, false)
 	if err != nil {
-		return resp, err
+		if vErr != nil && vErr.IsEWBError() {
+			messages := strings.Join(vErr.GetErrorMessages(), "; ")
+			err = fmt.Errorf("%s", messages)
+		}
+		return resp, fmt.Errorf("failed to create ewaybill: %s", err)
 	}
 	return resp, nil
 }
@@ -112,4 +118,14 @@ func (c *client) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateRes
 func (c *client) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (c *client) GetEWayBill(ewbNo string) (*types.EWBGetResponse, error) {
+	endpoint := fmt.Sprintf("/basic/ewb/v1.0/v1.03/%s", ewbNo)
+	resp := &types.EWBGetResponse{}
+	err, _ := c.sendAuthorizedRequest(http.MethodGet, endpoint, nil, resp, false, false)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
 }
