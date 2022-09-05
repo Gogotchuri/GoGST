@@ -1,9 +1,18 @@
 package vayana
 
 import (
+	"github.com/gogotchuri/GoGST"
 	"github.com/gogotchuri/GoGST/types"
+	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 	"testing"
 )
+
+func getGSPClient() GoGST.GSPClient {
+	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
+	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjM3NDUwNiwiaWF0IjoxNjYyMzUyOTA2fQ.btbQ8dZ4L10GHMUdwDOFT1hr2eG5y7VT5C-ku60JspBSaeOQvTURr5p9OvT4_oukZZ3a6tya856uatFbcMbHxfPkx1jVXe0Iz6zmtgaHIf_v5J_VDwSppvS7v0vYiFLREJcSPhQvdc1Zl_KSZ9H3ymaYhmLRqjuKwnS5qswuPmNVlDPN1kEGJxkynLDUPyl5My6_HxvwZotNPCNtVdgcW49kyfnFWahZI3XGuxEoujW8WYWGiq9eaLIBmz9VU2fwkmEbN5ESVzfGaS4lvBRc5-9gSeDVIvQ-6Hg0oV_ziOfCsedIuXftdQjo6bch_MnbCR9kvx9_OAm6Z5TVJciHxg")
+	gspC, _ := client.CreateGSPClient("29AAACW4202F1ZM", "test_dlr228", "test_dlr228")
+	return gspC
+}
 
 func TestClient_Ping(t *testing.T) {
 	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
@@ -26,9 +35,8 @@ func TestClient_Authenticate(t *testing.T) {
 }
 
 func TestClient_GetGSTINDetails(t *testing.T) {
-	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
-	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjAzMzk2MSwiaWF0IjoxNjYyMDEyMzYxfQ.akPq4rK3IW-NSUzXmvYK6vG0Hr436VwHS05IJcB2G6yHpV2bTtNNO0HZemLWMo2Lmjn5rEyfUfy3M8o-u7wkgSDVrhwx31tYw3-8RfXCRIgm_Ozm3AgezW-9XaK3eNbcNVP5X0wVAXPFHyAls2r6ONbzOaj7NLC4YGEO-ryRzLnFDUl8DfuSJfZjB7m8bhY32jts7xtKXbX6QzfLJvwjxBJNDSYcM3dUuCK_Ivw_DdERVPG3qCommI37KOXpo4PE9Ox0YTUW0VtU9p64s-CLogBzsK0SB3PgQYtVcs6Opx0bd3ew2inRZMRqfeKrfVh7zavmNfVuSwkoWwp1RWDeRQ")
-	resp, err := client.GetGSTINDetails("29AKLPM8755F1Z2")
+	gspC := getGSPClient()
+	resp, err := gspC.GetGSTINDetails("29AKLPM8755F1Z2")
 	if err != nil {
 		t.Error(err)
 	}
@@ -36,14 +44,13 @@ func TestClient_GetGSTINDetails(t *testing.T) {
 }
 
 func TestClient_GenerateEWB(t *testing.T) {
-	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
-	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjExMzg1OSwiaWF0IjoxNjYyMDkyMjU5fQ.gy3oxyOcVyUJBivWhh24rTka9euI1eZgjnpUfKw4T3jmNfxRw0dlNzaTKgaed8oP56RUnKqHBlFmrnrHGnDJ--lzaypK41Tf1Xqt6uJBXCAqnDqY71R5lKft82vbPHlOT5eensIwrww5YtkkejSVc32ashjNZdknybUvQkjRdeIvk8Y3Qw2aSxUTiCvPo31lfaEEAyzjl3GxbhvA98gKjFd5eShCvTMNCirU5pgAUkptxO_cYeXj0Kqe-DzqM-2VZBESoKVK-DM7jyju8aidY__wd3_eazbz0l5pBVrSefK5WmUNiG_2LxYBExVC9PB4fD2xHvONTZgCP1dzeLi5Dw")
-	resp, err := client.CreateEWaybill(types.EWBCreateRequest{
+	gspC := getGSPClient()
+	resp, err := gspC.CreateEWaybill(types.EWBCreateRequest{
 		EWBBase: types.EWBBase{
 			SupplyType:            "O",
 			SubSupplyType:         "1",
 			DocType:               "INV",
-			DocNo:                 "7001-47",
+			DocNo:                 "7001-48",
 			DocDate:               "15/05/2022",
 			FromGstin:             "29AAACW4202F1ZM",
 			FromTrdName:           "welton",
@@ -94,11 +101,11 @@ func TestClient_GenerateEWB(t *testing.T) {
 		TransDocDate:  "15/05/2022",
 	})
 	if err != nil {
-		t.Error(err)
+		t.Error(err, err == vayanaTypes.ErrorTokenExpired)
 		return
 	}
 	t.Logf("%+v", resp)
-	ewb, err := client.GetEWayBill(resp.EwayBillNo)
+	ewb, err := gspC.GetEWayBill(resp.EwayBillNo)
 	if err != nil {
 		t.Error(err)
 	}

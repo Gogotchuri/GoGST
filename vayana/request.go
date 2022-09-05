@@ -11,6 +11,13 @@ import (
 	"net/http"
 )
 
+type request struct {
+	method   string
+	endpoint string
+	body     interface{}
+	dest     interface{}
+}
+
 func (c *client) getEndpointURL(endpoint string, theodore bool) string {
 	if endpoint == vayanaTypes.HealthCheck {
 		return fmt.Sprintf("%s/%s", c.theodoreBaseURL, endpoint)
@@ -20,43 +27,19 @@ func (c *client) getEndpointURL(endpoint string, theodore bool) string {
 	return fmt.Sprintf("%s%s", c.apiBaseURL, endpoint)
 }
 
-func (c *client) sendRequest(method, endpoint string, body, dest interface{}, encrypt, theodore bool) (error, *vayanaTypes.Error) {
-	req, err := c.newRequest(method, c.getEndpointURL(endpoint, theodore), body, encrypt)
+func (c *client) sendRequest(r request, authenticated bool) error {
+	req, err := c.newRequest(r.method, c.getEndpointURL(r.endpoint, true), r.body, false)
 	if err != nil {
-		return err, nil
+		return err
 	}
-	return c.send(req, dest, encrypt)
-}
-
-func (c *client) sendAuthorizedRequest(method, path string, body, dest interface{}, encrypt, theodore bool) (error, *vayanaTypes.Error) {
-	if ok, err := c.isAuthenticated(); !ok {
-		return fmt.Errorf("token is empty, athenticate first. %s", err.Error()), nil
-	}
-	req, err := c.newRequest(method, c.getEndpointURL(path, theodore), body, encrypt)
-	if err != nil {
-		return err, nil
-	}
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
-	req.Header.Set("X-FLYNN-N-USER-TOKEN", c.token)
-	req.Header.Set("X-FLYNN-N-ORG-ID", c.organizationID)
-	//TODO: Only for the first time testing
-	req.Header.Set("X-FLYNN-N-EWB-GSTIN", "29AAACW4202F1ZM")
-	req.Header.Set("X-FLYNN-N-EWB-USERNAME", "test_dlr228")
-	req.Header.Set("X-FLYNN-N-EWB-PWD", "test_dlr228")
-	req.Header.Set("X-FLYNN-N-EWB-GSP-CODE", "clayfin")
-	if !theodore {
-		destRaw := &vayanaTypes.DataResponse{}
-		err, vErr := c.send(req, destRaw, encrypt)
-		if err != nil {
-			return err, vErr
+	if authenticated {
+		if ok, err := c.isAuthenticated(); !ok {
+			return fmt.Errorf("token is empty, athenticate first. %s", err.Error())
 		}
-		err = json.Unmarshal(destRaw.GetData(), dest)
-		if err != nil {
-			return err, nil
-		}
-		return nil, nil
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
 	}
-	return c.send(req, dest, encrypt)
+	err, _ = c.send(req, r.dest, false)
+	return err
 }
 
 //send
@@ -83,11 +66,13 @@ func (c *client) send(req *http.Request, dest interface{}, decrypt bool) (error,
 
 	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		data, err = io.ReadAll(resp.Body)
-		fmt.Println(string(data))
 		if err == nil && len(data) > 0 {
 			var vayanaError vayanaTypes.ErrorResponse
 			err = json.Unmarshal(data, &vayanaError)
 			if err == nil {
+				if vayanaError.Error.IsTokenExpired() {
+					return vayanaTypes.ErrorTokenExpired, &vayanaError.Error
+				}
 				return fmt.Errorf("%d: %s \n%s", resp.StatusCode, "Request Failed", string(data)), &vayanaError.Error
 			}
 			return fmt.Errorf("%d: %s \n%s", resp.StatusCode, "Request Failed", string(data)), nil

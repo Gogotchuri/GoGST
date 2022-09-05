@@ -6,14 +6,17 @@ import (
 )
 
 type Client interface {
+	Ping() error
 	Authenticate(email, password string) error
 	SetActiveToken(token string)
 	Logout() error
 
+	CreateGSPClient(gstin, username, password string) (GSPClient, error)
+}
+
+type GSPClient interface {
 	CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error)
 	GetEWayBill(ewbNo string) (*types.EWBGetResponse, error)
 	CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error)
-
 	GetGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error)
-	Ping() error
 }

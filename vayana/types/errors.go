@@ -2,10 +2,13 @@ package vayanaTypes
 
 import (
 	"encoding/json"
+	"fmt"
 	ewbConsts "github.com/gogotchuri/GoGST/consts"
 	"strconv"
 	"strings"
 )
+
+var ErrorTokenExpired = fmt.Errorf("err-expired-token")
 
 type ErrorResponse struct {
 	Error Error `json:"error"`
@@ -26,6 +29,10 @@ type ErrorArgs struct {
 
 func (e *Error) IsEWBError() bool {
 	return e.Type == "Ewb" || e.Message == "err-ewb-returned-error"
+}
+
+func (e *Error) IsTokenExpired() bool {
+	return e.Type == "Authorization" && e.Message == ErrorTokenExpired.Error()
 }
 
 func (e *Error) GetErrorMessages() []string {

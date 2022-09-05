@@ -3,11 +3,9 @@ package vayana
 import (
 	"fmt"
 	"github.com/gogotchuri/GoGST"
-	"github.com/gogotchuri/GoGST/types"
 	"github.com/gogotchuri/GoGST/vayana/encription"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 )
@@ -55,9 +53,14 @@ func NewClient(baseURL, theodoreBaseURL, organizationID, publicKey, rek, version
 	}
 }
 
-func (c *client) Ping() error {
-	err, _ := c.sendRequest(http.MethodGet, vayanaTypes.HealthCheck, nil, nil, false, true)
-	return err
+func (c *client) CreateGSPClient(gstin, username, password string) (GoGST.GSPClient, error) {
+	return &gspClient{
+		theodoreClient: c,
+		httpClient:     &http.Client{},
+		creatorGSTIN:   gstin,
+		username:       username,
+		password:       password,
+	}, nil
 }
 
 func (c *client) SetActiveToken(token string) {
@@ -67,14 +70,26 @@ func (c *client) SetActiveToken(token string) {
 	c.tokenLock.Unlock()
 }
 
+func (c *client) Ping() error {
+	return c.sendRequest(request{
+		method:   http.MethodGet,
+		endpoint: vayanaTypes.HealthCheck,
+	}, false)
+}
+
 func (c *client) Authenticate(email, password string) error {
 	resp := vayanaTypes.AuthResponse{}
-	err, _ := c.sendRequest(http.MethodPost, vayanaTypes.AuthTokens, vayanaTypes.AuthRequest{
-		HandleType:          "email",
-		Handle:              email,
-		Password:            password,
-		TokenDurationInMins: 360,
-	}, &resp, false, true)
+	err := c.sendRequest(request{
+		method:   http.MethodPost,
+		endpoint: vayanaTypes.AuthTokens,
+		body: vayanaTypes.AuthRequest{
+			HandleType:          "email",
+			Handle:              email,
+			Password:            password,
+			TokenDurationInMins: 360,
+		},
+		dest: &resp,
+	}, false)
 	if err != nil {
 		return err
 	}
@@ -90,7 +105,10 @@ func (c *client) Authenticate(email, password string) error {
 }
 
 func (c *client) Logout() error {
-	err, _ := c.sendAuthorizedRequest(http.MethodPost, vayanaTypes.Logout, nil, nil, false, true)
+	err := c.sendRequest(request{
+		method:   http.MethodPost,
+		endpoint: vayanaTypes.Logout,
+	}, true)
 	if err != nil {
 		return err
 	}
@@ -99,33 +117,4 @@ func (c *client) Logout() error {
 	c.tokenExpiresAt = time.Time{}
 	c.tokenLock.Unlock()
 	return nil
-}
-
-func (c *client) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error) {
-	endpoint := "/basic/ewb/v1.0/v1.03/gen-ewb"
-	resp := &types.EWBCreateResponse{}
-	err, vErr := c.sendAuthorizedRequest(http.MethodPost, endpoint, ewb, resp, false, false)
-	if err != nil {
-		if vErr != nil && vErr.IsEWBError() {
-			messages := strings.Join(vErr.GetErrorMessages(), "; ")
-			err = fmt.Errorf("%s", messages)
-		}
-		return resp, fmt.Errorf("failed to create ewaybill: %s", err)
-	}
-	return resp, nil
-}
-
-func (c *client) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c *client) GetEWayBill(ewbNo string) (*types.EWBGetResponse, error) {
-	endpoint := fmt.Sprintf("/basic/ewb/v1.0/v1.03/%s", ewbNo)
-	resp := &types.EWBGetResponse{}
-	err, _ := c.sendAuthorizedRequest(http.MethodGet, endpoint, nil, resp, false, false)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
 }
