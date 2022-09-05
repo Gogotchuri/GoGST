@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (c *client) isAuthenticated() (bool, error) {
+func (c *client) IsAuthenticated() (bool, error) {
 	c.tokenLock.Lock()
 	defer c.tokenLock.Unlock()
 	if c.token == "" {

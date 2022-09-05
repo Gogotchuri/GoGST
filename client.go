@@ -8,6 +8,7 @@ import (
 type Client interface {
 	Ping() error
 	Authenticate(email, password string) error
+	IsAuthenticated() (bool, error)
 	SetActiveToken(token string)
 	Logout() error
 
