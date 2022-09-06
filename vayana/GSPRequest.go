@@ -7,7 +7,7 @@ import (
 )
 
 func (c *gspClient) sendRequest(r request) (error, *vayanaTypes.Error) {
-	if ok, err := c.theodoreClient.isAuthenticated(); !ok {
+	if ok, err := c.theodoreClient.IsAuthenticated(); !ok {
 		return fmt.Errorf("token is empty, athenticate first. %s", err.Error()), nil
 	}
 	req, err := c.theodoreClient.newRequest(r.method, c.theodoreClient.getEndpointURL(r.endpoint, false), r.body, false)

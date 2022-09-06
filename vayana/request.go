@@ -33,7 +33,7 @@ func (c *client) sendRequest(r request, authenticated bool) error {
 		return err
 	}
 	if authenticated {
-		if ok, err := c.isAuthenticated(); !ok {
+		if ok, err := c.IsAuthenticated(); !ok {
 			return fmt.Errorf("token is empty, athenticate first. %s", err.Error())
 		}
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
