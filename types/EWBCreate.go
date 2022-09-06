@@ -95,6 +95,7 @@ type EWBGetResponse struct {
 	EwayBillDate       string           `json:"ewayBillDate"`
 	UserGstin          string           `json:"userGstin"`
 	NoValidDays        int              `json:"noValidDays"`
+	Distance           int              `json:"actualDist"`
 	RejectStatus       string           `json:"rejectStatus"`
 	Status             string           `json:"status"`
 	ValidUpto          string           `json:"validUpto"`
