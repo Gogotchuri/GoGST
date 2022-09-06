@@ -110,6 +110,8 @@ type VehicleDetails struct {
 	UserGSTINTransin string `json:"userGSTINTransin"`
 	EnteredDate      string `json:"enteredDate"`
 	TransMode        string `json:"transMode"`
+	TransDocNo       string `json:"transDocNo"`
+	VehicleType      string `json:"vehicleType"`
 	TransDocDate     string `json:"transDocDate"`
 	GroupNo          string `json:"groupNo"`
 }

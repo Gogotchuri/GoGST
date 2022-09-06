@@ -1,12 +1,12 @@
 package types
 
-//Supply type
+// Supply type
 const (
 	SupplyType_Inward  = "I"
 	SupplyType_Outward = "O"
 )
 
-//Sub-Supply type
+// Sub-Supply type
 const (
 	SubSupplyType_Supply            = 1
 	SubSupplyType_Import            = 2
@@ -22,7 +22,7 @@ const (
 	SubSupplyType_ExhibitionOrFairs = 12
 )
 
-//Document type
+// Document type
 const (
 	DocumentType_TaxInvoice      = "INV"
 	DocumentType_BillOfSupply    = "BIL"
@@ -31,13 +31,13 @@ const (
 	DocumentType_Other           = "OTH"
 )
 
-//Consignment Status
+// Consignment Status
 const (
 	ConsignmentStatus_InMovement = "M"
 	ConsignmentStatus_InTransit  = "T"
 )
 
-//Transportation mode
+// Transportation mode
 const (
 	TransportationMode_Road      = 1
 	TransportationMode_Rail      = 2
@@ -46,7 +46,7 @@ const (
 	TransportationMode_InTransit = 5
 )
 
-//Unit
+// Unit
 const (
 	Unit_BAGS              = "BAG"
 	Unit_BALE              = "BAL"
@@ -103,7 +103,7 @@ const (
 	UpdateReason_FirstTime          = 4
 )
 
-//Generation mode
+// Generation mode
 const (
 	GenerationMode_API            = "API"
 	GenerationMode_BulkUpload     = "Exc"
@@ -112,14 +112,14 @@ const (
 	GenerationMode_WebBasedSystem = "WEB"
 )
 
-//EWB status
+// EWB status
 const (
 	EWBStatus_Active    = "ACT"
 	EWBStatus_Cancelled = "CNL"
 	EWBStatus_Discarded = "DIS"
 )
 
-//Cancel Reason
+// Cancel Reason
 const (
 	CancelReason_Duplicate        = 1
 	CancelReason_OrderCancelled   = 2
@@ -127,7 +127,7 @@ const (
 	CancelReason_Others           = 4
 )
 
-//Vehicle Type
+// Vehicle Type
 const (
 	VehicleType_Regular       = "R"
 	VehicleType_OverDimential = "O"
@@ -142,10 +142,12 @@ const (
 	ReasonForExtension_Others               = 99
 )
 
-//Transaction Type
+// Transaction Type
 const (
 	TransactionType_Regular              = 1
 	TransactionType_BillToShipTo         = 2
 	TransactionType_BillFromDispatchFrom = 3
 	TransactionType_BillFromTo           = 4
 )
+
+const TimeLayout = "02/01/2006 3:04:05 PM"
