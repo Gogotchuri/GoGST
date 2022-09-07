@@ -50,7 +50,7 @@ func TestClient_GenerateEWB(t *testing.T) {
 			SupplyType:            "O",
 			SubSupplyType:         "1",
 			DocType:               "INV",
-			DocNo:                 "7001-45",
+			DocNo:                 "70001-454",
 			DocDate:               "15/05/2022",
 			FromGstin:             "29AAACW4202F1ZM",
 			FromTrdName:           "welton",
