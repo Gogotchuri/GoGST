@@ -9,7 +9,7 @@ import (
 
 func getGSPClient() GoGST.GSPClient {
 	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
-	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjM3NDUwNiwiaWF0IjoxNjYyMzUyOTA2fQ.btbQ8dZ4L10GHMUdwDOFT1hr2eG5y7VT5C-ku60JspBSaeOQvTURr5p9OvT4_oukZZ3a6tya856uatFbcMbHxfPkx1jVXe0Iz6zmtgaHIf_v5J_VDwSppvS7v0vYiFLREJcSPhQvdc1Zl_KSZ9H3ymaYhmLRqjuKwnS5qswuPmNVlDPN1kEGJxkynLDUPyl5My6_HxvwZotNPCNtVdgcW49kyfnFWahZI3XGuxEoujW8WYWGiq9eaLIBmz9VU2fwkmEbN5ESVzfGaS4lvBRc5-9gSeDVIvQ-6Hg0oV_ziOfCsedIuXftdQjo6bch_MnbCR9kvx9_OAm6Z5TVJciHxg")
+	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2MjU0OTUwNCwiaWF0IjoxNjYyNTI3OTA0fQ.wdMwVr-y50hg8ShFzgACwmOWENAKGoMlnAtkeyAm-ViBKgB1X_XC_FZMXvyreGMEq2VqJeGSqU9nglguwqEjFXq2r0t38Bh_fmYOjSK7zW7HYa2sNAGCwc1-cpV62pYp6SrxcYf_2aqvxqOvIEBU4k9WYJ20VoO6w9j3kdJDaDxamluSvswgSCbjIcFSQQYZ9eXyURT9QIeUGVSmBNEdD7VjeHzJ-Dh3U_W-u9md81QDdbEoaPQ_35rIJeQvTT_O3V-_SDP56eNlX_IsZ9HpC3uh5UyM56TSkO8YD-zOfzewhR-QeOVJfL48_7k6J6HvfY8oe7S1Ps4vCY0_iTYltg")
 	gspC, _ := client.CreateGSPClient("29AAACW4202F1ZM", "test_dlr228", "test_dlr228")
 	return gspC
 }
@@ -50,7 +50,7 @@ func TestClient_GenerateEWB(t *testing.T) {
 			SupplyType:            "O",
 			SubSupplyType:         "1",
 			DocType:               "INV",
-			DocNo:                 "7001-48",
+			DocNo:                 "7001-45",
 			DocDate:               "15/05/2022",
 			FromGstin:             "29AAACW4202F1ZM",
 			FromTrdName:           "welton",

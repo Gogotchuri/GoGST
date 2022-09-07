@@ -91,7 +91,7 @@ type EWBCreateResponse struct {
 type EWBGetResponse struct {
 	EWBBase
 
-	EwayBillNo         string           `json:"ewayBillNo"`
+	EwayBillNo         string           `json:"ewbNo"`
 	EwayBillDate       string           `json:"ewayBillDate"`
 	UserGstin          string           `json:"userGstin"`
 	NoValidDays        int              `json:"noValidDays"`
