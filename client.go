@@ -3,6 +3,8 @@ package GoGST
 import (
 	"github.com/gogotchuri/GoGST/types"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
+	"strings"
+	"time"
 )
 
 type Client interface {
@@ -20,4 +22,9 @@ type GSPClient interface {
 	GetEWayBill(ewbNo string) (*types.EWBGetResponse, error)
 	CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error)
 	GetGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error)
+	GetEWayBillsByDate(date time.Time) ([]types.EWBGetResponse, error)
+}
+
+func IsGSPCredentialsError(err error) bool {
+	return strings.Contains(err.Error(), "Invalid login credentials")
 }
