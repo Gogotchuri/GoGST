@@ -34,7 +34,7 @@ func NewDefaultClient(production bool, organizationID string) (GoGST.Client, err
 		return nil, fmt.Errorf("failed to generate rek: %s", err)
 	}
 	if production {
-		return NewClient(vayanaTypes.BaseProductionAPI, vayanaTypes.TheodoreBaseProductionAPI, vayanaTypes.ProductionPublicKey, organizationID, rek, vayanaTypes.DefaultVersion), nil
+		return NewClient(vayanaTypes.BaseProductionAPI, vayanaTypes.TheodoreBaseProductionAPI, organizationID, vayanaTypes.ProductionPublicKey, rek, vayanaTypes.DefaultVersion), nil
 	}
 	return NewClient(vayanaTypes.BaseSandboxAPI, vayanaTypes.TheodoreBaseSandboxAPI, organizationID, vayanaTypes.SandboxPublicKey, rek, vayanaTypes.DefaultVersion), nil
 }
