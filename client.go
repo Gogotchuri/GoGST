@@ -25,6 +25,9 @@ type GSPClient interface {
 	GetEWayBillsByDate(date time.Time) ([]types.EWBGetResponse, error)
 }
 
+type GSPEInvoiceClient interface {
+}
+
 func IsGSPCredentialsError(err error) bool {
-	return strings.Contains(err.Error(), "Invalid login credentials")
+	return strings.Contains(err.Error(), "Invalid login credentialsa")
 }

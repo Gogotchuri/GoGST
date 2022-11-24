@@ -9,14 +9,14 @@ import (
 )
 
 func getGSPClient() GoGST.GSPClient {
-	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
-	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiOTYyM2Y5MDYtNmMyMy00NGFiLTg5MzUtYjU0OWZiMDM4ZjEwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoK3ZheWFuYTFAa2VybmVsLmZpbmFuY2UiLCJpc3MiOiJ2LXRoZW8iLCJuYW1lIjoiSWxpYSBHb2dvdGNodXJpIiwib3JncyI6WyJ7XCJvaWRcIjpcIjNiNWY1ZGZhLWQyNDQtNDBlZC1iZmIxLTA0ZDc4MjAzMjhiNVwiLFwicHJpbVwiOnRydWUsXCJhZG1cIjp0cnVlLFwic2VydlwiOltcImdzcFwiLFwiZWFwaVwiLFwidnNcIl19Il0sImV4cCI6MTY2Mjc1ODgzNywiaWF0IjoxNjYyNzM3MjM3fQ.M2gR6xeOROPUk0-auzq2bmA_-g9d8N-4uRyxIaboQ1_vFuKvAYwSGwsVzncIbNREs-5iMENeRvlnj1tZE6QUwGKhKA66rrOiHhqoGMs39Vbg4VycL_Jd1HCY87bwhMswEW2_dZw7AqzDMnfbr9zvTFPlcdNp9iH1rlRasQsTce2xfe-2rZEMEfFZvfyb4apgH9KJJwa8976UMrQ0y9ylrmme3cnTfpB2YbLSUqgAqgH9sYwX6oey4w8VMe_hisE97Nv2adEPGHpMUAb-12IfxavV-CF7LGON2xnQ28XE8t1QKCTyuZCiSgofVvGgnUcBp6TVJraR1C6rNB8KI_nztg")
+	client, _ := NewDefaultClient(true, "da3a9839-c072-46b2-ac4f-601f72d39674")
+	client.SetActiveToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiZmI4OTM0YjktODkzZS00NmRjLThjNmEtMTU2NGUwOTBhOGYwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCJkYTNhOTgzOS1jMDcyLTQ2YjItYWM0Zi02MDFmNzJkMzk2NzRcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCJdfSJdLCJleHAiOjE2NjMyNjEyNDQsImlhdCI6MTY2MzIzOTY0NH0.g5g9CLOYU5QyjR_uPQzlNypRKlPtyTrkagH-xFqM9WyMYQOfvV10KYPAAEv_MoRsjmx4pRBNagfOhC2LKZ5CGRWf3D-qFtfXlsFAuhGqSLmKEuy_FRgutCIKAil2MtzBshosAj0EEttXrctZZ8BsBXWjcekXIex9a96IneRYlTsTiS915ZMH-5wEB6kc_ZWXqOXuajdOnQ6a9es9yhA3neU_Gblv3YoNhkvY7AqHdD0ATeMNd4BWi8El7-atn7kwwNX1LmgSnOKLC2nYITL-lVa_mG6pP96qhvy9DOTEDXLpFxevLVl7IutcfF4G7U2GzTGqlj6CCMBt31T6GJBJAMGFTn8uNiuaca0dfzqZyVZNctkSYpCzVPbCh-h30XBqE_fyIIss3dqo-BsEPTEOWvUy7G8ZfCLNSivei1M6XM7VMa7jsEDqzt7nER_bQrsV9uebJ4Kz5qzp5EDYtXkPfEwQLmK_hAtL1t2Dh4FY2ICLpXZMI5v5MDfnvWGFpBIYvm62NWsDzjl4fivm5H9myc2Bc0N_z0Ge4vEWrsfY7OqnspG9fDFpZd-bx5x5PAWXQB85iR9XjWmta1EoJpoDr7pu9xLTWlT1Q_KsZsZFJUFaakTPbOdqSI65xU1PkMttBihLCCmyLcxw816fX-TfgG82V2o7r7Jd7F4agyX2JhM")
 	gspC, _ := client.CreateGSPClient("29AAACW4202F1ZM", "test_dlr228", "test_dlr228")
 	return gspC
 }
 
 func TestClient_Ping(t *testing.T) {
-	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
+	client, _ := NewDefaultClient(true, "da3a9839-c072-46b2-ac4f-601f72d39674")
 	err := client.Ping()
 	if err != nil {
 		t.Error(err)
@@ -24,8 +24,8 @@ func TestClient_Ping(t *testing.T) {
 }
 
 func TestClient_Authenticate(t *testing.T) {
-	client, _ := NewDefaultClient(false, "3b5f5dfa-d244-40ed-bfb1-04d7820328b5")
-	err := client.Authenticate("tech+vayana1@kernel.finance", "Strawhats16!")
+	client, _ := NewDefaultClient(true, "da3a9839-c072-46b2-ac4f-601f72d39674")
+	err := client.Authenticate("tech@kernel.finance", "Strawhats16!")
 	if err != nil {
 		t.Error(err)
 	}
