@@ -1,7 +1,12 @@
 package EInvTypes
 
+//import (
+//	"github.com/gogotchuri/go-validator"
+//	"github.com/mcuadros/go-defaults"
+//)
+
 type Transporter struct {
-	TaxScheme string `json:"TaxSch" validate:"default=GST,oneof=GST,required"` //TODO: validation default
+	TaxScheme string `json:"TaxSch" default:"GST" validate:"oneof=GST,required"` //TODO: validation default
 	//Type of Supply: B2B-Business to Business, SEZWP - SEZ with payment, SEZWOP - SEZ without payment, EXPWP - Export with Payment, EXPWOP - Export without payment,DEXP - Deemed Export
 	SupplyType string `json:"SupTyp" validate:"default=B2B,oneof='B2B' 'EZWP' 'EZWOP' 'XPWP' 'XPWOP' 'EXP',required"`
 	//whether the tax liability is payable under reverse charge
@@ -14,7 +19,7 @@ type Transporter struct {
 type DocumentDetails struct {
 	Type       string `json:"Typ" validate:"default=INV,oneof='INV' 'CRN' 'DBN',required"`
 	DocumentNo string `json:"No"  validate:"min=1,max=16,alphanumeric,required,startsnotwith=0,startsnotwith=/,startsnotwith=-"`
-	Date       string `json:"Dt"  validate:"date='DD/MM/YYYY',required"` //todo: date validation
+	Date       string `json:"Dt"  validate:"date_format=02/01/2006,required"`
 }
 
 type Address struct {
@@ -26,7 +31,7 @@ type Address struct {
 }
 
 type Company struct {
-	GSTIN     string `json:"Gstin" validate:"min=15,max=15,alphanumeric,india_gstin,required"` //TODO: india_gstin validation
+	GSTIN     string `json:"Gstin" validate:"min=15,max=15,alphanumeric,india_gstin,required"`
 	LegalName string `json:"LglNm" validate:"min=1,max=100,required"`
 	TradeName string `json:"TrdNm" validate:"min=1,max=100"`
 	Address
@@ -97,8 +102,8 @@ type Item struct {
 
 type ItemBatchDetails struct {
 	Name           string `json:"Nm"    validate:"min=3,max=20,required"`
-	ExpirationDate string `json:"ExpDt" validate:"date='DD/MM/YYYY'"`
-	WarrantyDate   string `json:"WrDt"  validate:"date='DD/MM/YYYY'"`
+	ExpirationDate string `json:"ExpDt" validate:"date_format=02/01/2006"`
+	WarrantyDate   string `json:"WrDt"  validate:"date_format=02/01/2006"`
 }
 
 type ItemAttribute struct {
@@ -136,25 +141,25 @@ type PaymentDetails struct {
 }
 
 type Period struct {
-	StartDate string `json:"InvStDt" validate:"date='DD/MM/YYYY',required"`
-	EndDate   string `json:"InvEndDt" validate:"date='DD/MM/YYYY',required"`
+	StartDate string `json:"InvStDt" validate:"date_format=02/01/2006,required"`
+	EndDate   string `json:"InvEndDt" validate:"date_format=02/01/2006,required"`
 }
 
 type PrecedingDocumentDetails struct {
 	InvoiceNo        string `json:"InvNo" validate:"min=1,max=16,alphanumeric,required"`
-	InvoiceDate      string `json:"InvDt" validate:"date='DD/MM/YYYY',required"`
+	InvoiceDate      string `json:"InvDt" validate:"date_format=02/01/2006,required"`
 	OtherReferenceNo string `json:"OthRefNo" validate:"min=1,max=20"`
 }
 
 type ContractDetails struct {
 	ReceiptAdvRefr string `json:"RecAdvRefr" validate:"min=1,max=20"`
-	ReceiptAdvDt   string `json:"RecAdvDt" validate:"date='DD/MM/YYYY'"`
+	ReceiptAdvDt   string `json:"RecAdvDt" validate:"date_format=02/01/2006"`
 	TendRefr       string `json:"TendRefr" validate:"min=1,max=20"`
 	ContrRefr      string `json:"ContrRefr" validate:"min=1,max=20"`
 	ExtRefr        string `json:"ExtRefr" validate:"min=1,max=20"`
 	ProjRefr       string `json:"ProjRefr" validate:"min=1,max=20"`
 	PORefr         string `json:"PORefr" validate:"min=1,max=16"`
-	PORefDt        string `json:"PORefDt" validate:"date='DD/MM/YYYY'"`
+	PORefDt        string `json:"PORefDt" validate:"date_format=02/01/2006"`
 }
 
 type ReferenceDetails struct {
@@ -181,12 +186,12 @@ type ExportDetails struct {
 }
 
 type EWBDetails struct {
-	TransId    string `json:"TransId" validate:"india_gstin_transin"` //TODO
+	TransId    string `json:"TransId" validate:"india_transin"`
 	TransName  string `json:"TransName" validate:"min=3,max=100"`
 	Distance   int    `json:"Distance" validate:"min=0,max=9999999999"`
 	TransMode  string `json:"TransMode" validate:"min=1,max=1,oneof=1 2 3 4"`
 	TransDocNo string `json:"TransDocNo" validate:"min=1,max=15,alphanumeric"`
-	TransDocDt string `json:"TransDocDt" validate:"date='DD/MM/YYYY'"`
+	TransDocDt string `json:"TransDocDt" validate:"date_format=02/01/2006"`
 	VehNo      string `json:"VehNo" validate:"min=4,max=20,alphanumeric"`
 	VehType    string `json:"VehType" validate:"min=1,max=1,oneof=R O"`
 }
@@ -209,4 +214,10 @@ type EInvoiceCreate struct {
 	AdditionalDocumentDetails []AdditionalDocumentDetails `json:"AddlDocDtls"`
 	ExportDetails             *ExportDetails              `json:"ExpDtls"`
 	EWBDetails                *EWBDetails                 `json:"EwbDtls"`
+}
+
+func (e *EInvoiceCreate) Validate() error {
+	//TODO set default values
+	//TODO validate
+	return nil
 }
