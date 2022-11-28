@@ -5,6 +5,7 @@ import (
 	"github.com/gogotchuri/GoGST"
 	"github.com/gogotchuri/GoGST/vayana/encription"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
+	"github.com/gogotchuri/go-validator"
 	"net/http"
 	"sync"
 	"time"
@@ -13,6 +14,8 @@ import (
 var _ GoGST.Client = &client{}
 
 type client struct {
+	validator *validator.Validate
+
 	apiBaseURL      string
 	theodoreBaseURL string
 	apiVersion      string
@@ -41,6 +44,7 @@ func NewDefaultClient(production bool, organizationID string) (GoGST.Client, err
 
 func NewClient(baseURL, theodoreBaseURL, organizationID, publicKey, rek, version string) GoGST.Client {
 	return &client{
+		validator:       validator.New(),
 		apiBaseURL:      baseURL,
 		theodoreBaseURL: theodoreBaseURL,
 		apiVersion:      version,
@@ -55,6 +59,20 @@ func NewClient(baseURL, theodoreBaseURL, organizationID, publicKey, rek, version
 
 func (c *client) CreateGSPClient(gstin, username, password string) (GoGST.GSPClient, error) {
 	return &gspClient{
+		validator: c.validator,
+
+		theodoreClient: c,
+		httpClient:     &http.Client{},
+		creatorGSTIN:   gstin,
+		username:       username,
+		password:       password,
+	}, nil
+}
+
+func (c *client) CreateGSPEInvoicesClient(gstin, username, password string) (GoGST.GSPEInvoiceClient, error) {
+	return &gspClient{
+		validator: c.validator,
+
 		theodoreClient: c,
 		httpClient:     &http.Client{},
 		creatorGSTIN:   gstin,

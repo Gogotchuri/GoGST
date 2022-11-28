@@ -5,6 +5,7 @@ import (
 	"github.com/gogotchuri/GoGST"
 	"github.com/gogotchuri/GoGST/types"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
+	"github.com/gogotchuri/go-validator"
 	"net/http"
 	"strings"
 	"time"
@@ -15,6 +16,8 @@ const vayanaBasicEWBBase = "/basic/ewb/v1.0/v1.03"
 var _ GoGST.GSPClient = &gspClient{}
 
 type gspClient struct {
+	validator *validator.Validate
+
 	theodoreClient *client
 	httpClient     *http.Client
 

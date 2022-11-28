@@ -2,6 +2,7 @@ package GoGST
 
 import (
 	"github.com/gogotchuri/GoGST/types"
+	"github.com/gogotchuri/GoGST/types/EInvTypes"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 	"strings"
 	"time"
@@ -15,6 +16,7 @@ type Client interface {
 	Logout() error
 
 	CreateGSPClient(gstin, username, password string) (GSPClient, error)
+	CreateGSPEInvoicesClient(gstin, username, password string) (GSPEInvoiceClient, error)
 }
 
 type GSPClient interface {
@@ -26,6 +28,8 @@ type GSPClient interface {
 }
 
 type GSPEInvoiceClient interface {
+	CreateEInvoice(eInv EInvTypes.EInvoiceCreate) (*EInvTypes.Response, error)
+	GetEInvoice(irn string) (*EInvTypes.Response, error)
 }
 
 func IsGSPCredentialsError(err error) bool {
