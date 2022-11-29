@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-const TOKEN = ""
+const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiYmIyZGUyYmEtNWQ0NC00MDQ4LWJiNDktYTNiMTQ3NDhlMjk5IiwibW9iIjoiKzkxLTU5NzczMDM1OSIsImVtbCI6InRlY2grdmFuYXlhQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCI1ZGJlMTNmOC1jNjBiLTQ4YTYtODcwNS1kNzM0YjhlMTM0ZTVcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCIsXCJzYWhpZ3N0XCJdfSJdLCJleHAiOjE2Njk3Mjc1NjQsImlhdCI6MTY2OTcwNTk2NH0.2CPTxNmiqUWJCyAzKnrl70XdVFszfbl93UCIUN1mVtWcwIbKGPaC1CxycVjjpHT0_m3urhq6KQCQ-mln7xnV6V_RCO5YsSDjvvZp99pa6SSL1xIguK2pRqLZTn1GTWik1wRNY7ejcCwD1XBNPr5AUokGgnCsuEK75MTy5B3mhTcVTriGpUHNDyLcktHMBBPAgENoGFQQFPgZSGcBIUotSSWGIO9qE6y1X2o0jNc0uZjYK55wmR6mCBg6N4UgsVLypKuuoWjCRAbObVAzkq8FrM-o0rliBW_cOj-_Gs5wsuyssxrknPtFIe5ifupQAexXui1IDZd6b6MW3LInj1MgnQ"
 const IsProduction = false
 const OrgID = "5dbe13f8-c60b-48a6-8705-d734b8e134e5"
 
@@ -157,24 +157,59 @@ func TestGSPEInvoicesClient_CreateEInvoice(t *testing.T) {
 }
 
 func getSampleInvoiceCreateRequest() EInvTypes.EInvoiceCreate {
+	seller := EInvTypes.Company{
+		GSTIN:     "29AAACW4202F1ZM",
+		LegalName: "Legal Company",
+		Address: EInvTypes.Address{
+			Address1:  "Varketili",
+			Address2:  "Parder 231f",
+			Location:  "Tbilisi",
+			Pin:       516101,
+			StateCode: "29",
+		},
+	}
 	return EInvTypes.EInvoiceCreate{
 		DocumentDetails: EInvTypes.DocumentDetails{
 			DocumentNo: "DOC102335",
 			Date:       "30/11/2022",
 		},
 		SellerDetails: EInvTypes.Seller{
-			Company: EInvTypes.Company{
-				GSTIN:     "29AAACW4202F1ZM",
-				LegalName: "Legal Company",
-			},
+			Company: seller,
 		},
 		BuyerDetails: EInvTypes.Buyer{
 			Company: EInvTypes.Company{
-				GSTIN: "29AAACW4202F1ZM",
+				LegalName: "Legal Company Buyer",
+				GSTIN:     "29AEKPV7203E1Z9",
+				Address: EInvTypes.Address{
+					Address1:  "Pradhan Mantri Awas Yojana",
+					Location:  "Beml Nagar",
+					Pin:       516101,
+					StateCode: "37",
+				},
 			},
-			PlaceOfSupply: "Andra Pradesh",
+			PlaceOfSupply: "37",
 		},
-		ItemList:       []EInvTypes.Item{},
-		DocumentValues: EInvTypes.DocumentValues{},
+		ItemList: []EInvTypes.Item{
+			{
+				ItemBase: EInvTypes.ItemBase{
+					SerialNo:           "1",
+					ProductDescription: "Wheat",
+					HSNCode:            "100101",
+					Unit:               "PCS",
+					UnitPrice:          10,
+					Quantity:           10,
+					NetAmount:          100,
+					TaxableAmount:      100,
+					IGSTRate:           3,
+					IGSTAmount:         3,
+					TotalAmount:        103,
+				},
+			},
+		},
+		DocumentValues: EInvTypes.DocumentValues{
+			TaxableValue: 100,
+			IGSTValue:    3,
+			TotalAmount:  103,
+		},
 	}
 }

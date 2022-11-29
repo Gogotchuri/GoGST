@@ -15,7 +15,7 @@ type TransportationDetails struct {
 	SupplyType string `json:"SupTyp" default:"B2B" validate:"oneof='B2B' 'EZWP' 'EZWOP' 'XPWP' 'XPWOP' 'EXP'"`
 	//whether the tax liability is payable under reverse charge
 	RegRev         string `json:"RegRev" default:"N" validate:"oneof='Y' 'N'"`
-	ECommerceGstin string `json:"EcmGstin"`
+	ECommerceGstin string `json:"EcmGstin,omitempty"`
 	//indicates the supply is intra state but chargeable to IGST
 	IgstOnIntra string `json:"IgstOnIntra" default:"N" validate:"oneof='Y' 'N'"`
 }
@@ -28,7 +28,7 @@ type DocumentDetails struct {
 
 type Address struct {
 	Address1  string `json:"Addr1" validate:"min=1,max=100"`
-	Address2  string `json:"Addr2" validate:"omitempty,min=3,max=100"`
+	Address2  string `json:"Addr2,omitempty" validate:"omitempty,min=3,max=100"`
 	Location  string `json:"Loc"   validate:"min=3,max=50"`
 	Pin       uint   `json:"Pin"   validate:"min=100000,max=999999"`
 	StateCode string `json:"Stcd"  validate:"min=1,max=2,numeric"`
@@ -37,10 +37,10 @@ type Address struct {
 type Company struct {
 	GSTIN     string `json:"Gstin" validate:"india_gstin"`
 	LegalName string `json:"LglNm" validate:"min=1,max=100"`
-	TradeName string `json:"TrdNm" validate:"omitempty,min=1,max=100"`
+	TradeName string `json:"TrdNm,omitempty" validate:"omitempty,min=1,max=100"`
 	Address
-	Phone string `json:"Ph"    validate:"omitempty,min=6,max=12,numeric"`
-	Email string `json:"Em"    validate:"omitempty,min=6,max=100,email"`
+	Phone string `json:"Ph,omitempty"    validate:"omitempty,min=6,max=12,numeric"`
+	Email string `json:"Em,omitempty"    validate:"omitempty,min=6,max=100,email"`
 }
 
 type Seller struct {
@@ -70,9 +70,9 @@ type ShipToDetails struct {
 type ItemBase struct {
 	SerialNo           string  `json:"SlNo" validate:"min=1,max=6,numeric"`
 	ProductDescription string  `json:"PrdDesc" validate:"omitempty,min=3,max=300"`
-	IsService          string  `json:"IsServc" validate:"oneof='Y' 'N'"`
-	HSNCode            string  `json:"HsnCd" validate:"min=4,max=8,numeric"`
-	Barcode            string  `json:"Barcde" validate:"omitempty,min=3,max=30"`
+	IsService          string  `json:"IsServc" default:"N" validate:"required,oneof='Y' 'N'"`
+	HSNCode            string  `json:"HsnCd" validate:"min=6,max=8,numeric"`
+	Barcode            string  `json:"Barcde,omitempty" validate:"omitempty,min=3,max=30"`
 	Unit               string  `json:"Unit" validate:"omitempty,min=3,max=8,alpha"` //TODO: unit validation
 	UnitPrice          float64 `json:"UnitPrice" validate:"min=0,max=9999999999"`
 	Quantity           float64 `json:"Qty" validate:"min=0,max=9999999999"`
@@ -97,9 +97,9 @@ type Item struct {
 	StateCesRate           float64           `json:"StateCesRt" validate:"min=0,max=100"`
 	StateCesAmount         float64           `json:"StateCesAmt" validate:"min=0,max=9999999999"`
 	StateCesNonAdvalAmount float64           `json:"StateCesNonAdvlAmt" validate:"min=0,max=9999999999"`
-	OrdLineReference       string            `json:"OrdLineRef" validate:"omitempty,min=1,max=50"`
-	CountryOfOrigin        string            `json:"OrgCntry" validate:"omitempty,min=2,max=2,alpha"`
-	ProductSerialNo        string            `json:"PrdSlNo" validate:"omitempty,min=1,max=20"`
+	OrdLineReference       string            `json:"OrdLineRef,omitempty" validate:"omitempty,min=1,max=50"`
+	CountryOfOrigin        string            `json:"OrgCntry,omitempty" default:"IN" validate:"required,min=2,max=2,alpha"`
+	ProductSerialNo        string            `json:"PrdSlNo,omitempty" validate:"omitempty,min=1,max=20"`
 	BatchDetails           *ItemBatchDetails `json:"BchDtls"`
 	ItemAttributes         []ItemAttribute   `json:"AttribDtls"`
 }
@@ -211,7 +211,7 @@ type EInvoiceCreate struct {
 	DispatchDtls *DispatchDetails `json:"DispDtls"`
 	//if Transaction Type is Bill To - Ship To | if "Combination of Both" both are provided
 	ShipToDetails             *ShipToDetails              `json:"omitempty,ShipDtls"`
-	ItemList                  []Item                      `json:"ItemList" validate:"min=1,max=1000,unique=SerialNo"`
+	ItemList                  []Item                      `json:"ItemList" validate:"dive,min=1,max=1000,unique=SerialNo"`
 	DocumentValues            DocumentValues              `json:"ValDtls" validate:"required"`
 	PaymentDetails            *PaymentDetails             `json:"omitempty,PayDtls"`
 	ReferenceDetails          *ReferenceDetails           `json:"omitempty,RefDtls"`
