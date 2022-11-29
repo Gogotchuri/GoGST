@@ -3,22 +3,32 @@ package vayana
 import (
 	"github.com/gogotchuri/GoGST"
 	"github.com/gogotchuri/GoGST/types"
+	"github.com/gogotchuri/GoGST/types/EInvTypes"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 	"testing"
 	"time"
 )
 
-const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiZmI4OTM0YjktODkzZS00NmRjLThjNmEtMTU2NGUwOTBhOGYwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCJkYTNhOTgzOS1jMDcyLTQ2YjItYWM0Zi02MDFmNzJkMzk2NzRcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCJdfSJdLCJleHAiOjE2Njk2ODYxOTIsImlhdCI6MTY2OTY2NDU5Mn0.baZKVR8CZ9W8jWTRbGECpntYqA79yodBZFLUes838XMc7h57QJmk3dFJSWNEQbjc_fjwJcbZZKnqioyyhW54rbhEBLAIPL4RJ0TWDqr0HguO_-YUhmANSgc7KQRNKBNTM3wr1SawaJ3NTs67TJLrZz0mq6k_f75PzvzxmWpjX1yBZ6iy_NbRWzTqqK3Nwgo-nNYlF1lmGvDalVyWqXg3hxSJnYgzBJTgsFolhruixHqc9wsy5Cz5ApUzSivyVkUpRUYZB1Oh83_IuzJP3Xybw4mkMJ7J63cuybJXWbvsJeq6FivjdWw4gEVeBPGAa_dlXPeIZSt6zWIhRUwFLOVfgFb7P4XmIfl2SwF7Zfm69MzH24RYauOomsA7RaMJvSQjElLAfrmBErLCaaIudv810pxfvH0TzNMU1svB4eI99sHV-K97NUNmHeoL3CzU32oq2euf0D575iDToI4hyA0nZzFG4UCXozQH8KT8ZUC2QU9QJ-8LfEv9AMHHESg4xHHPmpDDTeotUMRc4RWSywBMZVPdC2fvybiPgtwiSkwb4cHEYLTLUFUZFAWM4PaDtzl1p_ThB2G9GqeHqZj3nJYkngvuHgmw4bdo8pd0gwHxNYgVaSenh2fMqIR9OmonViyBhl59InrlwRXpYFMeXXUw1UVAdvvGtltYpZpHfCLH5Ps"
+const TOKEN = ""
+const IsProduction = false
+const OrgID = "5dbe13f8-c60b-48a6-8705-d734b8e134e5"
 
 func getGSPClient() GoGST.GSPClient {
-	client, _ := NewDefaultClient(false, "da3a9839-c072-46b2-ac4f-601f72d39674")
+	client, _ := NewDefaultClient(IsProduction, OrgID)
 	client.SetActiveToken(TOKEN)
 	gspC, _ := client.CreateGSPClient("29AAACW4202F1ZM", "test_dlr228", "test_dlr228")
 	return gspC
 }
 
+func getEInvoicesClient() GoGST.GSPEInvoiceClient {
+	client, _ := NewDefaultClient(IsProduction, OrgID)
+	client.SetActiveToken(TOKEN)
+	eInvoicesC, _ := client.CreateGSPEInvoicesClient("29AAACW4202F1ZM", "test_dlr228", "test_dlr228")
+	return eInvoicesC
+}
+
 func TestClient_Ping(t *testing.T) {
-	client, _ := NewDefaultClient(true, "da3a9839-c072-46b2-ac4f-601f72d39674")
+	client, _ := NewDefaultClient(IsProduction, OrgID)
 	err := client.Ping()
 	if err != nil {
 		t.Error(err)
@@ -26,8 +36,8 @@ func TestClient_Ping(t *testing.T) {
 }
 
 func TestClient_Authenticate(t *testing.T) {
-	client, _ := NewDefaultClient(true, "da3a9839-c072-46b2-ac4f-601f72d39674")
-	err := client.Authenticate("tech@kernel.finance", "Strawhats16!")
+	client, _ := NewDefaultClient(IsProduction, OrgID)
+	err := client.Authenticate("", "")
 	if err != nil {
 		t.Error(err)
 	}
@@ -135,4 +145,36 @@ func TestGspClient_GetEWayBillsByDate(t *testing.T) {
 		t.Error(err)
 	}
 	t.Logf("%+v", res)
+}
+
+func TestGSPEInvoicesClient_CreateEInvoice(t *testing.T) {
+	einvClient := getEInvoicesClient()
+	res, err := einvClient.CreateEInvoice(getSampleInvoiceCreateRequest())
+	if err != nil {
+		t.Error(err)
+	}
+	t.Logf("%+v", res)
+}
+
+func getSampleInvoiceCreateRequest() EInvTypes.EInvoiceCreate {
+	return EInvTypes.EInvoiceCreate{
+		DocumentDetails: EInvTypes.DocumentDetails{
+			DocumentNo: "DOC102335",
+			Date:       "30/11/2022",
+		},
+		SellerDetails: EInvTypes.Seller{
+			Company: EInvTypes.Company{
+				GSTIN:     "29AAACW4202F1ZM",
+				LegalName: "Legal Company",
+			},
+		},
+		BuyerDetails: EInvTypes.Buyer{
+			Company: EInvTypes.Company{
+				GSTIN: "29AAACW4202F1ZM",
+			},
+			PlaceOfSupply: "Andra Pradesh",
+		},
+		ItemList:       []EInvTypes.Item{},
+		DocumentValues: EInvTypes.DocumentValues{},
+	}
 }

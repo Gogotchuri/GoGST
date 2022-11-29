@@ -9,7 +9,7 @@ import (
 	"github.com/mcuadros/go-defaults"
 )
 
-type Transporter struct {
+type TransportationDetails struct {
 	TaxScheme string `json:"TaxSch" default:"GST" validate:"oneof=GST"`
 	//Type of Supply: B2B-Business to Business, SEZWP - SEZ with payment, SEZWOP - SEZ without payment, EXPWP - Export with Payment, EXPWOP - Export without payment,DEXP - Deemed Export
 	SupplyType string `json:"SupTyp" default:"B2B" validate:"oneof='B2B' 'EZWP' 'EZWOP' 'XPWP' 'XPWOP' 'EXP'"`
@@ -201,12 +201,12 @@ type EWBDetails struct {
 }
 
 type EInvoiceCreate struct {
-	Version            string          `json:"Version" default:"1.1" validate:"numeric,min=1,max=6"`
-	ReferenceNumber    string          `json:"Irn" validate:"isdefault"`
-	TransporterDetails Transporter     `json:"TranDtls" validate:"required"`
-	DocumentDetails    DocumentDetails `json:"DocDtls" validate:"required"`
-	SellerDetails      Seller          `json:"SellerDtls" validate:"required"`
-	BuyerDetails       Buyer           `json:"BuyerDtls" validate:"required"`
+	Version               string                `json:"Version" default:"1.1" validate:"numeric,min=1,max=6"`
+	ReferenceNumber       string                `json:"Irn" default:"" validate:"isdefault"`
+	TransportationDetails TransportationDetails `json:"TranDtls" validate:"required"`
+	DocumentDetails       DocumentDetails       `json:"DocDtls" validate:"required"`
+	SellerDetails         Seller                `json:"SellerDtls" validate:"required"`
+	BuyerDetails          Buyer                 `json:"BuyerDtls" validate:"required"`
 	//if transaction type is Bill From - Dispatch From
 	DispatchDtls *DispatchDetails `json:"DispDtls"`
 	//if Transaction Type is Bill To - Ship To | if "Combination of Both" both are provided
