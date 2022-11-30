@@ -7,6 +7,7 @@ import (
 	"github.com/gogotchuri/go-validator"
 	"github.com/gogotchuri/go-validator/translations/en"
 	"github.com/mcuadros/go-defaults"
+	"strings"
 )
 
 type TransportationDetails struct {
@@ -35,7 +36,7 @@ type Address struct {
 }
 
 type Company struct {
-	GSTIN     string `json:"Gstin" validate:"india_gstin"`
+	GSTIN     string `json:"Gstin" validate:"india_transin"` //TODO: validate gstin after production is ready
 	LegalName string `json:"LglNm" validate:"min=1,max=100"`
 	TradeName string `json:"TrdNm,omitempty" validate:"omitempty,min=1,max=100"`
 	Address
@@ -220,13 +221,13 @@ type EInvoiceCreate struct {
 	EWBDetails                *EWBDetails                 `json:"omitempty,EwbDtls"`
 }
 
-func (e *EInvoiceCreate) Validate(validate *validator.Validate) error {
+func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors {
 	eng := english.New()
 	uni := ut.New(eng, eng)
 	trans, _ := uni.GetTranslator("en")
 	err := en.RegisterDefaultTranslations(validate, trans)
 	if err != nil {
-		return fmt.Errorf("error while registering default translations: %v", err)
+		return fromError(fmt.Errorf("error while registering default translations: %v", err))
 	}
 	//set default values
 	defaults.SetDefaults(e)
@@ -238,7 +239,7 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) error {
 
 	errs, ok := err.(validator.ValidationErrors)
 	if !ok {
-		return fmt.Errorf("error while convering validation erros")
+		return fromError(fmt.Errorf("error while convering validation erros"))
 	}
 	errorString := ""
 	for i, e := range errs {
@@ -247,5 +248,25 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) error {
 		}
 		errorString += e.Translate(trans)
 	}
-	return fmt.Errorf(errorString)
+	return fromError(fmt.Errorf(errorString))
+}
+
+type ValidationErrors []error
+
+func (v ValidationErrors) Error() string {
+	strs := make([]string, len(v))
+	for i, err := range v {
+		strs[i] = err.Error()
+	}
+	return strings.Join(strs, ", ")
+}
+
+func fromError(err error) ValidationErrors {
+	if err == nil {
+		return nil
+	}
+	if errs, ok := err.(ValidationErrors); ok {
+		return errs
+	}
+	return []error{err}
 }
