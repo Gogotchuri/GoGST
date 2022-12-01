@@ -227,7 +227,7 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors
 	trans, _ := uni.GetTranslator("en")
 	err := en.RegisterDefaultTranslations(validate, trans)
 	if err != nil {
-		return fromError(fmt.Errorf("error while registering default translations: %v", err))
+		return FromError(fmt.Errorf("error while registering default translations: %v", err))
 	}
 	//set default values
 	defaults.SetDefaults(e)
@@ -239,7 +239,7 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors
 
 	errs, ok := err.(validator.ValidationErrors)
 	if !ok {
-		return fromError(fmt.Errorf("error while convering validation erros"))
+		return FromError(fmt.Errorf("error while convering validation erros"))
 	}
 	errorString := ""
 	for i, e := range errs {
@@ -248,7 +248,7 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors
 		}
 		errorString += e.Translate(trans)
 	}
-	return fromError(fmt.Errorf(errorString))
+	return FromError(fmt.Errorf(errorString))
 }
 
 type ValidationErrors []error
@@ -261,7 +261,7 @@ func (v ValidationErrors) Error() string {
 	return strings.Join(strs, ", ")
 }
 
-func fromError(err error) ValidationErrors {
+func FromError(err error) ValidationErrors {
 	if err == nil {
 		return nil
 	}

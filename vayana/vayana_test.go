@@ -9,21 +9,25 @@ import (
 	"time"
 )
 
-const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiYmIyZGUyYmEtNWQ0NC00MDQ4LWJiNDktYTNiMTQ3NDhlMjk5IiwibW9iIjoiKzkxLTU5NzczMDM1OSIsImVtbCI6InRlY2grdmFuYXlhQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCI1ZGJlMTNmOC1jNjBiLTQ4YTYtODcwNS1kNzM0YjhlMTM0ZTVcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCIsXCJzYWhpZ3N0XCJdfSJdLCJleHAiOjE2Njk3Mjc1NjQsImlhdCI6MTY2OTcwNTk2NH0.2CPTxNmiqUWJCyAzKnrl70XdVFszfbl93UCIUN1mVtWcwIbKGPaC1CxycVjjpHT0_m3urhq6KQCQ-mln7xnV6V_RCO5YsSDjvvZp99pa6SSL1xIguK2pRqLZTn1GTWik1wRNY7ejcCwD1XBNPr5AUokGgnCsuEK75MTy5B3mhTcVTriGpUHNDyLcktHMBBPAgENoGFQQFPgZSGcBIUotSSWGIO9qE6y1X2o0jNc0uZjYK55wmR6mCBg6N4UgsVLypKuuoWjCRAbObVAzkq8FrM-o0rliBW_cOj-_Gs5wsuyssxrknPtFIe5ifupQAexXui1IDZd6b6MW3LInj1MgnQ"
+const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiYmIyZGUyYmEtNWQ0NC00MDQ4LWJiNDktYTNiMTQ3NDhlMjk5IiwibW9iIjoiKzkxLTU5NzczMDM1OSIsImVtbCI6InRlY2grdmFuYXlhQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCI1ZGJlMTNmOC1jNjBiLTQ4YTYtODcwNS1kNzM0YjhlMTM0ZTVcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCIsXCJzYWhpZ3N0XCJdfSJdLCJleHAiOjE2Njk4MzU4MTksImlhdCI6MTY2OTgxNDIxOX0.4yoi_OJAklBaMlV5GpE4T2Y0EiNEriFlx2qYQHsFq0XrtkdbNQP31Dn6bsKS-FpcWBcBdi9B1xy9Eh17vvHP5-MXV26faywaoqswa5WGvaEhfsUe1EISUOxjk_1WGn6tE87AkozFnCjfR_lSSamUcvP3DBdTuFRGUjdZuV_R1Yf4UMXFIY5ceBrnsptCbDAZLemkFDSrH-YhtbjxXK11t-6bhvB4pOkVtu8vTAjcUu6WNzK2BNSVFl4tvHe2urBEmaxXSGEbTNim7ZqSL2_8t8PvRkg8YGZIDJzPaee2W-1inxT4FgSKFLAeCXaPkmLwnFyn01cMJgtMHBR0eeiYiw"
 const IsProduction = false
 const OrgID = "5dbe13f8-c60b-48a6-8705-d734b8e134e5"
+
+const GSTIN = "29AAAPI3182M000"
+const TUser = "test_29_000"
+const TPass = "Info21einv#Done"
 
 func getGSPClient() GoGST.GSPClient {
 	client, _ := NewDefaultClient(IsProduction, OrgID)
 	client.SetActiveToken(TOKEN)
-	gspC, _ := client.CreateGSPClient("29AAACW4202F1ZM", "test_dlr228", "test_dlr228")
+	gspC, _ := client.CreateGSPClient(GSTIN, TUser, TPass)
 	return gspC
 }
 
 func getEInvoicesClient() GoGST.GSPEInvoiceClient {
 	client, _ := NewDefaultClient(IsProduction, OrgID)
 	client.SetActiveToken(TOKEN)
-	eInvoicesC, _ := client.CreateGSPEInvoicesClient("29AAACW4202F1ZM", "test_dlr228", "test_dlr228")
+	eInvoicesC, _ := client.CreateGSPEInvoicesClient(GSTIN, TUser, TPass)
 	return eInvoicesC
 }
 
@@ -37,7 +41,7 @@ func TestClient_Ping(t *testing.T) {
 
 func TestClient_Authenticate(t *testing.T) {
 	client, _ := NewDefaultClient(IsProduction, OrgID)
-	err := client.Authenticate("", "")
+	err := client.Authenticate("tech+vanaya@kernel.finance", "Strawhats16!")
 	if err != nil {
 		t.Error(err)
 	}
@@ -63,7 +67,7 @@ func TestClient_GenerateEWB(t *testing.T) {
 			SupplyType:            "O",
 			SubSupplyType:         "1",
 			DocType:               "INV",
-			DocNo:                 "70001-4534",
+			DocNo:                 "70001-4534AA",
 			DocDate:               "15/05/2022",
 			FromGstin:             "29AAACW4202F1ZM",
 			FromTrdName:           "welton",
@@ -158,13 +162,13 @@ func TestGSPEInvoicesClient_CreateEInvoice(t *testing.T) {
 
 func getSampleInvoiceCreateRequest() EInvTypes.EInvoiceCreate {
 	seller := EInvTypes.Company{
-		GSTIN:     "29AAACW4202F1ZM",
+		GSTIN:     GSTIN,
 		LegalName: "Legal Company",
 		Address: EInvTypes.Address{
 			Address1:  "Varketili",
 			Address2:  "Parder 231f",
 			Location:  "Tbilisi",
-			Pin:       516101,
+			Pin:       560090,
 			StateCode: "29",
 		},
 	}
@@ -179,12 +183,12 @@ func getSampleInvoiceCreateRequest() EInvTypes.EInvoiceCreate {
 		BuyerDetails: EInvTypes.Buyer{
 			Company: EInvTypes.Company{
 				LegalName: "Legal Company Buyer",
-				GSTIN:     "29AEKPV7203E1Z9",
+				GSTIN:     "29AAACW6288M1ZH",
 				Address: EInvTypes.Address{
 					Address1:  "Pradhan Mantri Awas Yojana",
 					Location:  "Beml Nagar",
-					Pin:       516101,
-					StateCode: "37",
+					Pin:       560090,
+					StateCode: "29",
 				},
 			},
 			PlaceOfSupply: "37",
@@ -194,7 +198,7 @@ func getSampleInvoiceCreateRequest() EInvTypes.EInvoiceCreate {
 				ItemBase: EInvTypes.ItemBase{
 					SerialNo:           "1",
 					ProductDescription: "Wheat",
-					HSNCode:            "100101",
+					HSNCode:            "01011020",
 					Unit:               "PCS",
 					UnitPrice:          10,
 					Quantity:           10,
