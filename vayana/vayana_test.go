@@ -9,13 +9,14 @@ import (
 	"time"
 )
 
-const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiYmIyZGUyYmEtNWQ0NC00MDQ4LWJiNDktYTNiMTQ3NDhlMjk5IiwibW9iIjoiKzkxLTU5NzczMDM1OSIsImVtbCI6InRlY2grdmFuYXlhQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCI1ZGJlMTNmOC1jNjBiLTQ4YTYtODcwNS1kNzM0YjhlMTM0ZTVcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCIsXCJzYWhpZ3N0XCJdfSJdLCJleHAiOjE2Njk4MzU4MTksImlhdCI6MTY2OTgxNDIxOX0.4yoi_OJAklBaMlV5GpE4T2Y0EiNEriFlx2qYQHsFq0XrtkdbNQP31Dn6bsKS-FpcWBcBdi9B1xy9Eh17vvHP5-MXV26faywaoqswa5WGvaEhfsUe1EISUOxjk_1WGn6tE87AkozFnCjfR_lSSamUcvP3DBdTuFRGUjdZuV_R1Yf4UMXFIY5ceBrnsptCbDAZLemkFDSrH-YhtbjxXK11t-6bhvB4pOkVtu8vTAjcUu6WNzK2BNSVFl4tvHe2urBEmaxXSGEbTNim7ZqSL2_8t8PvRkg8YGZIDJzPaee2W-1inxT4FgSKFLAeCXaPkmLwnFyn01cMJgtMHBR0eeiYiw"
+const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiYmIyZGUyYmEtNWQ0NC00MDQ4LWJiNDktYTNiMTQ3NDhlMjk5IiwibW9iIjoiKzkxLTU5NzczMDM1OSIsImVtbCI6InRlY2grdmFuYXlhQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCI1ZGJlMTNmOC1jNjBiLTQ4YTYtODcwNS1kNzM0YjhlMTM0ZTVcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCIsXCJzYWhpZ3N0XCJdfSJdLCJleHAiOjE2NzAzMzAxNzUsImlhdCI6MTY3MDMwODU3NX0.PQc59OsFptsDK3pOl9PW0vU2zzUdHlYhJXYz2D2ytED75eOn3UYN-F5BiE7vTL4g_g3JNDEGhMvt13-hPG6omLzQQSdKM1plF72CYIWgQX_TGMkpRqXKHrbMjz9xnTer9qeHbDnvKRfMOijreLWAfAbCoWwlui3iClAV0C3QLRzqTQd0oCMdAGMUJ-Qb1go3UV-Ds9y4_26WANrffKFUA8vCpTkxlU4ke0xjQK8baDhAL-LNFIZs0krbOFulzoyCNRie5g8IZGFTOE977joyneS2Pni51d9gmsVCOkd6GPbYDwoZhmZJNAv6uiyrkLMbDhUVQBw67hTBFkDMlpl_Kg"
 const IsProduction = false
 const OrgID = "5dbe13f8-c60b-48a6-8705-d734b8e134e5"
 
 const GSTIN = "29AAAPI3182M000"
 const TUser = "test_29_000"
 const TPass = "Info21einv#Done"
+const Password = ""
 
 func getGSPClient() GoGST.GSPClient {
 	client, _ := NewDefaultClient(IsProduction, OrgID)
@@ -41,7 +42,7 @@ func TestClient_Ping(t *testing.T) {
 
 func TestClient_Authenticate(t *testing.T) {
 	client, _ := NewDefaultClient(IsProduction, OrgID)
-	err := client.Authenticate("tech+vanaya@kernel.finance", "Strawhats16!")
+	err := client.Authenticate("tech+vanaya@kernel.finance", Password)
 	if err != nil {
 		t.Error(err)
 	}
