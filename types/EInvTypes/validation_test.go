@@ -23,5 +23,5 @@ func TestValidate(t *testing.T) {
 	if err == nil {
 		t.Errorf("Validation should fail, got nil")
 	}
-	fmt.Println(err)
+	fmt.Println(err.Errors())
 }

@@ -241,17 +241,22 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors
 	if !ok {
 		return FromError(fmt.Errorf("error while convering validation erros"))
 	}
-	errorString := ""
-	for i, e := range errs {
-		if i != 0 {
-			errorString += ", "
-		}
-		errorString += e.Translate(trans)
+
+	if len(errs) == 0 {
+		return nil
 	}
-	return FromError(fmt.Errorf(errorString))
+	vErrs := make([]error, len(errs))
+	for i, e := range errs {
+		vErrs[i] = fmt.Errorf(e.Translate(trans))
+	}
+	return FromErrors(vErrs)
 }
 
 type ValidationErrors []error
+
+func (v ValidationErrors) Errors() []error {
+	return v
+}
 
 func (v ValidationErrors) Error() string {
 	strs := make([]string, len(v))
@@ -269,4 +274,10 @@ func FromError(err error) ValidationErrors {
 		return errs
 	}
 	return []error{err}
+}
+func FromErrors(errs []error) ValidationErrors {
+	if len(errs) == 0 {
+		return nil
+	}
+	return errs
 }
