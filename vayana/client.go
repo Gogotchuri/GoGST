@@ -14,7 +14,8 @@ import (
 var _ GoGST.Client = &client{}
 
 type client struct {
-	validator *validator.Validate
+	validator      *validator.Validate
+	validationLock *sync.Mutex
 
 	apiBaseURL      string
 	theodoreBaseURL string
@@ -45,6 +46,7 @@ func NewDefaultClient(production bool, organizationID string) (GoGST.Client, err
 func NewClient(baseURL, theodoreBaseURL, organizationID, publicKey, rek, version string) GoGST.Client {
 	return &client{
 		validator:       validator.New(),
+		validationLock:  &sync.Mutex{},
 		apiBaseURL:      baseURL,
 		theodoreBaseURL: theodoreBaseURL,
 		apiVersion:      version,
@@ -59,8 +61,8 @@ func NewClient(baseURL, theodoreBaseURL, organizationID, publicKey, rek, version
 
 func (c *client) CreateGSPClient(gstin, username, password string) (GoGST.GSPClient, error) {
 	return &gspClient{
-		validator: c.validator,
-
+		validator:      c.validator,
+		validationLock: c.validationLock,
 		theodoreClient: c,
 		httpClient:     &http.Client{},
 		creatorGSTIN:   gstin,
@@ -71,7 +73,8 @@ func (c *client) CreateGSPClient(gstin, username, password string) (GoGST.GSPCli
 
 func (c *client) CreateGSPEInvoicesClient(gstin, username, password string) (GoGST.GSPEInvoiceClient, error) {
 	return &gspClient{
-		validator: c.validator,
+		validator:      c.validator,
+		validationLock: c.validationLock,
 
 		theodoreClient: c,
 		httpClient:     &http.Client{},

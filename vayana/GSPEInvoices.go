@@ -12,8 +12,11 @@ var _ GoGST.GSPEInvoiceClient = &gspClient{}
 const vayanaBasicEInvBase = "/basic/einv/v1.0/nic/eicore/v1.03/Invoice"
 
 func (c *gspClient) CreateEInvoice(eInv EInvTypes.EInvoiceCreate) (*EInvTypes.Response, error) {
-	if err := eInv.Validate(c.validator); err != nil {
-		return nil, err
+	c.validationLock.Lock()
+	validationError := eInv.Validate(c.validator)
+	c.validationLock.Unlock()
+	if validationError != nil {
+		return nil, validationError
 	}
 	endpoint := vayanaBasicEInvBase
 	resp := &EInvTypes.Response{}
