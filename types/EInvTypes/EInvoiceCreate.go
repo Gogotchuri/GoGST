@@ -247,7 +247,7 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors
 	}
 	vErrs := make([]error, len(errs))
 	for i, e := range errs {
-		vErrs[i] = fmt.Errorf(e.Translate(trans))
+		vErrs[i] = fmt.Errorf("%s : %s", e.Namespace()[15:], e.Translate(trans))
 	}
 	return FromErrors(vErrs)
 }
