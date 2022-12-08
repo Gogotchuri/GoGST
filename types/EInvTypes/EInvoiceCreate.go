@@ -226,7 +226,6 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors
 	for i := range e.ItemList {
 		e.ItemList[i].Unit = getValidUnit(e.ItemList[i].Unit)
 	}
-
 	eng := english.New()
 	uni := ut.New(eng, eng)
 	trans, _ := uni.GetTranslator("en")
@@ -255,36 +254,6 @@ func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors
 		vErrs[i] = fmt.Errorf("%s : %s", e.Namespace()[15:], e.Translate(trans))
 	}
 	return FromErrors(vErrs)
-}
-
-type ValidationErrors []error
-
-func (v ValidationErrors) Errors() []error {
-	return v
-}
-
-func (v ValidationErrors) Error() string {
-	strs := make([]string, len(v))
-	for i, err := range v {
-		strs[i] = err.Error()
-	}
-	return strings.Join(strs, ", ")
-}
-
-func FromError(err error) ValidationErrors {
-	if err == nil {
-		return nil
-	}
-	if errs, ok := err.(ValidationErrors); ok {
-		return errs
-	}
-	return []error{err}
-}
-func FromErrors(errs []error) ValidationErrors {
-	if len(errs) == 0 {
-		return nil
-	}
-	return errs
 }
 
 func getValidUnit(unit string) string {

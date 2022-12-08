@@ -20,22 +20,67 @@ type Error struct {
 	Args    ErrorArgs `json:"args"`
 }
 
-type ErrorArgs struct {
-	ParameterName string `json:"parameter-name"`
-	Status        string `json:"status"`
-	ErrorText     string `json:"error-text"`
-	ErrorCodes    []int  `json:"error-codes"`
+func (e Error) Error() string {
+	return fmt.Sprintf("%s: %s", e.Type, e.Message)
 }
 
-func (e *Error) IsEWBError() bool {
+type ErrorArgs struct {
+	IRPErrors     IRPError `json:"irpErrors"`
+	ErrorLocation string   `json:"errorLocation"`
+	ParameterName string   `json:"parameter-name"`
+	Status        string   `json:"status"`
+	ErrorText     string   `json:"error-text"`
+	ErrorCodes    []int    `json:"error-codes"`
+}
+
+type IRPError struct {
+	Details []IRPErrorDetail `json:"details"`
+	Info    []IRPErrorInfo   `json:"info"`
+}
+
+type IRPErrorDetail struct {
+	ErrorCode    string `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
+}
+
+type IRPErrorInfo struct {
+	InfCd    string      `json:"InfCd"`
+	Desc     interface{} `json:"Desc"`
+	InfoDesc struct {
+		AckNo int64  `json:"AckNo"`
+		AckDt string `json:"AckDt"`
+		Irn   string `json:"Irn"`
+	} `json:"InfoDesc"`
+}
+
+func (e Error) IsEWBError() bool {
 	return e.Type == "Ewb" || e.Message == "err-ewb-returned-error"
 }
 
-func (e *Error) IsTokenExpired() bool {
+func (e Error) IsIRPError() bool {
+	return e.Type == "Irp" || e.Message == "err-irp-returned-error"
+}
+
+func (e Error) GetIRPErrorMessages() []string {
+	var messages []string
+	for _, detail := range e.Args.IRPErrors.Details {
+		messages = append(messages, detail.ErrorMessage)
+	}
+	return messages
+}
+
+func (e Error) IsInvalidBodyError() bool {
+	return e.Type == "ClientRequest" && e.Message == "err-invalid-request-body"
+}
+
+func (e Error) GetInvalidBodyErrorMessages() []string {
+	return strings.Split(e.Args.ErrorLocation, ";")
+}
+func (e Error) IsTokenExpired() bool {
 	return e.Type == "Authorization" && e.Message == ErrorTokenExpired.Error()
 }
 
-func (e *Error) GetErrorMessages() []string {
+func (e *Error) GetEwbErrorMessages() []string {
 	codes := e.GetErrorCodes()
 	if len(codes) == 0 {
 		return []string{}

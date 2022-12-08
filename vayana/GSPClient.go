@@ -117,10 +117,12 @@ func (c *gspClient) handleError(vErr *vayanaTypes.Error) error {
 		return nil
 	}
 	if vErr.IsEWBError() {
-		messages := strings.Join(vErr.GetErrorMessages(), ";")
+		messages := strings.Join(vErr.GetEwbErrorMessages(), ";")
 		return fmt.Errorf("%s", messages)
 	} else if vErr.IsTokenExpired() {
 		return vayanaTypes.ErrorTokenExpired
+	} else if vErr.IsIRPError() || vErr.IsInvalidBodyError() {
+		return vErr
 	}
 	return nil
 }
