@@ -37,7 +37,7 @@ func (c *client) refreshToken() error {
 		return fmt.Errorf("%s", res.Error.Message)
 	}
 	c.token = res.Data.Token
-	c.tokenExpiresAt = time.Now().Add(359 * time.Minute)
+	c.tokenExpiresAt = time.Now().Add(60 * time.Minute)
 	return nil
 }
 

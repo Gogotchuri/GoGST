@@ -84,7 +84,7 @@ func (c *client) CreateGSPEInvoicesClient(gstin, username, password string) (GoG
 func (c *client) SetActiveToken(token string) {
 	c.tokenLock.Lock()
 	c.token = token
-	c.tokenExpiresAt = time.Now().Add(359 * time.Minute)
+	c.tokenExpiresAt = time.Now().Add(60 * time.Minute)
 	c.tokenLock.Unlock()
 }
 
@@ -104,7 +104,7 @@ func (c *client) Authenticate(email, password string) error {
 			HandleType:          "email",
 			Handle:              email,
 			Password:            password,
-			TokenDurationInMins: 360,
+			TokenDurationInMins: 60,
 		},
 		dest: &resp,
 	}, false)
@@ -117,7 +117,7 @@ func (c *client) Authenticate(email, password string) error {
 	c.tokenLock.Lock()
 	c.token = resp.Data.Token
 	fmt.Println(resp.Data.Token)
-	c.tokenExpiresAt = time.Now().Add(359 * time.Minute)
+	c.tokenExpiresAt = time.Now().Add(60 * time.Minute)
 	c.tokenLock.Unlock()
 	return nil
 }
