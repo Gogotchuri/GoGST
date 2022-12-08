@@ -36,7 +36,7 @@ type Address struct {
 }
 
 type Company struct {
-	GSTIN     string `json:"Gstin" validate:"india_transin"` //TODO: validate gstin after production is ready
+	GSTIN     string `json:"Gstin" validate:"india_transin"`
 	LegalName string `json:"LglNm" validate:"min=1,max=100"`
 	TradeName string `json:"TrdNm,omitempty" validate:"omitempty,min=1,max=100"`
 	Address
@@ -74,7 +74,7 @@ type ItemBase struct {
 	IsService          string  `json:"IsServc" default:"N" validate:"required,oneof='Y' 'N'"`
 	HSNCode            string  `json:"HsnCd" validate:"min=6,max=8,numeric"`
 	Barcode            string  `json:"Barcde,omitempty" validate:"omitempty,min=3,max=30"`
-	Unit               string  `json:"Unit" validate:"omitempty,min=3,max=8,alpha"` //TODO: unit validation
+	Unit               string  `json:"Unit" validate:"omitempty,min=3,max=8,alpha"`
 	UnitPrice          float64 `json:"UnitPrice" validate:"min=0,max=9999999999"`
 	Quantity           float64 `json:"Qty" validate:"min=0,max=9999999999"`
 	NetAmount          float64 `json:"TotAmt" validate:"min=0,max=9999999999"`
@@ -211,17 +211,22 @@ type EInvoiceCreate struct {
 	//if transaction type is Bill From - Dispatch From
 	DispatchDtls *DispatchDetails `json:"DispDtls"`
 	//if Transaction Type is Bill To - Ship To | if "Combination of Both" both are provided
-	ShipToDetails             *ShipToDetails              `json:"omitempty,ShipDtls"`
+	ShipToDetails             *ShipToDetails              `json:"ShipDtls,omitempty"`
 	ItemList                  []Item                      `json:"ItemList" validate:"dive,min=1,max=1000,unique=SerialNo"`
 	DocumentValues            DocumentValues              `json:"ValDtls" validate:"required"`
-	PaymentDetails            *PaymentDetails             `json:"omitempty,PayDtls"`
-	ReferenceDetails          *ReferenceDetails           `json:"omitempty,RefDtls"`
-	AdditionalDocumentDetails []AdditionalDocumentDetails `json:"omitempty,AddlDocDtls"`
-	ExportDetails             *ExportDetails              `json:"omitempty,ExpDtls"`
-	EWBDetails                *EWBDetails                 `json:"omitempty,EwbDtls"`
+	PaymentDetails            *PaymentDetails             `json:"PayDtls,omitempty"`
+	ReferenceDetails          *ReferenceDetails           `json:"RefDtls,omitempty"`
+	AdditionalDocumentDetails []AdditionalDocumentDetails `json:"AddlDocDtls,omitempty"`
+	ExportDetails             *ExportDetails              `json:"ExpDtls,omitempty"`
+	EWBDetails                *EWBDetails                 `json:"EwbDtls,omitempty"`
 }
 
 func (e *EInvoiceCreate) Validate(validate *validator.Validate) ValidationErrors {
+	//Uppercase all invoice item units
+	for i := range e.ItemList {
+		e.ItemList[i].Unit = getValidUnit(e.ItemList[i].Unit)
+	}
+
 	eng := english.New()
 	uni := ut.New(eng, eng)
 	trans, _ := uni.GetTranslator("en")
@@ -280,4 +285,15 @@ func FromErrors(errs []error) ValidationErrors {
 		return nil
 	}
 	return errs
+}
+
+func getValidUnit(unit string) string {
+	validUnits := []string{"BAG", "BAL", "BDL", "BKL", "BOU", "BOX", "BTL", "BUN", "CAN", "CBM", "CCM", "CMS", "CTN", "DOZ", "DRM", "GGK", "GMS", "GRS", "GYD", "KGS", "KLR", "KME", "LTR", "MTR", "MLT", "MTS", "NOS", "OTH", "PAC", "PCS", "PRS", "QTL", "ROL", "SET", "SQF", "SQM", "SQY", "TBS", "TGM", "THD", "TON", "TUB", "UGS", "UNT", "YDS"}
+	unit = strings.ToUpper(unit)
+	for _, u := range validUnits {
+		if unit == u {
+			return u
+		}
+	}
+	return "OTH"
 }
