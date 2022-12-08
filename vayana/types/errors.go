@@ -25,7 +25,7 @@ func (e Error) Error() string {
 }
 
 type ErrorArgs struct {
-	IRPErrors     IRPError `json:"irpErrors"`
+	IRPErrors     IRPError `json:"irp-err"`
 	ErrorLocation string   `json:"errorLocation"`
 	ParameterName string   `json:"parameter-name"`
 	Status        string   `json:"status"`
