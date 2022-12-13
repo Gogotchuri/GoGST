@@ -9,7 +9,9 @@ func getNameFromNamespace(namespace string) string {
 	namespace = strings.ReplaceAll(namespace, "BuyerDetails", "Buyer")
 	namespace = strings.ReplaceAll(namespace, "Buyer.Address", "Buyer")
 	namespace = strings.ReplaceAll(namespace, "ShipToDetails.Address", "Ship To Details")
+	namespace = strings.ReplaceAll(namespace, "ShipToDetails", "Ship To Details")
 	namespace = strings.ReplaceAll(namespace, "DispatchDetails.Address", "Dispatch Details")
+	namespace = strings.ReplaceAll(namespace, "DispatchDetails", "Dispatch Details")
 	namespace = strings.ReplaceAll(namespace, "DocumentDetails.Type", "Document Type")
 	namespace = strings.ReplaceAll(namespace, "DocumentDetails.DocumentNo", "Document No")
 	namespace = strings.ReplaceAll(namespace, "DocumentDetails.Date", "Document Date")
@@ -26,6 +28,11 @@ func getNameFromNamespace(namespace string) string {
 	namespace = strings.ReplaceAll(namespace, "Price", " Price")
 
 	namespace = strings.ReplaceAll(namespace, ".", " ")
+	namespace = strings.ReplaceAll(namespace, "ItemBase ", "")
+	namespace = strings.ReplaceAll(namespace, "ItemList", "Item ")
+	namespace = strings.ReplaceAll(namespace, "[", " ")
+	namespace = strings.ReplaceAll(namespace, "]", " - ")
+	namespace = strings.ReplaceAll(namespace, "  ", " ")
 
 	return namespace
 }
