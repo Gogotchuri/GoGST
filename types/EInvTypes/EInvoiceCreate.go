@@ -62,7 +62,7 @@ type DispatchDetails struct {
 }
 
 type ShipToDetails struct {
-	Gstin     string `json:"Gstin" validate:"omitempty,india_gstin"`
+	Gstin     string `json:"Gstin" validate:"omitempty,india_transin"`
 	LegalName string `json:"LglNm" validate:"min=3,max=100"`
 	TradeName string `json:"TrdNm" validate:"omitempty,min=3,max=100"`
 	Address
