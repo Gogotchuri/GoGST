@@ -33,6 +33,7 @@ func getNameFromNamespace(namespace string) string {
 	namespace = strings.ReplaceAll(namespace, "[", " ")
 	namespace = strings.ReplaceAll(namespace, "]", " - ")
 	namespace = strings.ReplaceAll(namespace, "  ", " ")
+	namespace = strings.ReplaceAll(namespace, "Location", "City")
 
 	return namespace
 }
