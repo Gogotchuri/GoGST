@@ -107,7 +107,7 @@ func (c *client) Authenticate(email, password string) error {
 			HandleType:          "email",
 			Handle:              email,
 			Password:            password,
-			TokenDurationInMins: 60,
+			TokenDurationInMins: 360,
 		},
 		dest: &resp,
 	}, false)
