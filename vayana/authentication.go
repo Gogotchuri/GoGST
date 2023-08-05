@@ -23,21 +23,19 @@ func (c *client) IsAuthenticated() (bool, error) {
 	return true, nil
 }
 
-// TODO test
 func (c *client) refreshToken() error {
 	res := &vayanaTypes.AuthResponse{}
-	if err := c.sendRequest(request{
-		method:   http.MethodPut,
-		endpoint: vayanaTypes.AuthTokens,
-		dest:     res,
-	}, true); err != nil {
+	req, err := c.newRequest(http.MethodPut, c.getEndpointURL(vayanaTypes.AuthTokens, true), nil, false)
+	if err != nil {
 		return err
 	}
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
+	err, _ = c.send(req, res, false)
 	if res.Error != nil {
 		return fmt.Errorf("%s", res.Error.Message)
 	}
 	c.token = res.Data.Token
-	c.tokenExpiresAt = time.Now().Add(60 * time.Minute)
+	c.tokenExpiresAt = time.Now().Add(tokenDurationMin * time.Minute)
 	return nil
 }
 
