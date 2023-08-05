@@ -37,6 +37,8 @@ func (c *client) sendRequest(r request, authenticated bool) error {
 			return fmt.Errorf("token is empty, athenticate first. %s", err.Error())
 		}
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
+		req.Header.Set("X-FLYNN-N-USER-TOKEN", c.token)
+		req.Header.Set("X-FLYNN-N-ORG-ID", c.organizationID)
 	}
 	err, _ = c.send(req, r.dest, false)
 	return err

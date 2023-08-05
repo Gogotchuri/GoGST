@@ -15,6 +15,7 @@ type Client interface {
 	SetActiveToken(token string)
 	Logout() error
 
+	GetPublicGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error)
 	CreateGSPClient(gstin, username, password string) (GSPClient, error)
 	CreateGSPEInvoicesClient(gstin, username, password string) (GSPEInvoiceClient, error)
 }
@@ -28,6 +29,7 @@ type GSPClient interface {
 }
 
 type GSPEInvoiceClient interface {
+	GetGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error)
 	CreateEInvoice(eInv EInvTypes.EInvoiceCreate) (*EInvTypes.Response, error)
 	GetEInvoice(irn string) (*EInvTypes.Response, error)
 }

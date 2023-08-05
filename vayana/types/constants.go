@@ -1,5 +1,7 @@
 package vayanaTypes
 
+import "fmt"
+
 const (
 	TheodoreBaseProductionAPI = "https://services.vayana.com/theodore/apis"
 	TheodoreBaseSandboxAPI    = "https://sandbox.services.vayananet.com/theodore/apis"
@@ -14,6 +16,10 @@ const (
 	Logout      = "/logout"
 	HealthCheck = "/health"
 )
+
+func SearchTaxPayerEndpoint(flynnVersion, gstnVersion, gstin string) string {
+	return fmt.Sprintf("/basic/gstn/%s/commonapi/%s/search?gstin=%s&action=TP", flynnVersion, gstnVersion, gstin)
+}
 
 // KEYS
 const (

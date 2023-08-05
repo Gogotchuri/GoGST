@@ -9,14 +9,14 @@ import (
 	"time"
 )
 
-const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiYmIyZGUyYmEtNWQ0NC00MDQ4LWJiNDktYTNiMTQ3NDhlMjk5IiwibW9iIjoiKzkxLTU5NzczMDM1OSIsImVtbCI6InRlY2grdmFuYXlhQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCI1ZGJlMTNmOC1jNjBiLTQ4YTYtODcwNS1kNzM0YjhlMTM0ZTVcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCIsXCJzYWhpZ3N0XCJdfSJdLCJleHAiOjE2NzAzMzAxNzUsImlhdCI6MTY3MDMwODU3NX0.PQc59OsFptsDK3pOl9PW0vU2zzUdHlYhJXYz2D2ytED75eOn3UYN-F5BiE7vTL4g_g3JNDEGhMvt13-hPG6omLzQQSdKM1plF72CYIWgQX_TGMkpRqXKHrbMjz9xnTer9qeHbDnvKRfMOijreLWAfAbCoWwlui3iClAV0C3QLRzqTQd0oCMdAGMUJ-Qb1go3UV-Ds9y4_26WANrffKFUA8vCpTkxlU4ke0xjQK8baDhAL-LNFIZs0krbOFulzoyCNRie5g8IZGFTOE977joyneS2Pni51d9gmsVCOkd6GPbYDwoZhmZJNAv6uiyrkLMbDhUVQBw67hTBFkDMlpl_Kg"
-const IsProduction = false
-const OrgID = "5dbe13f8-c60b-48a6-8705-d734b8e134e5"
+const TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJBdXRoIiwidWlkIjoiZmI4OTM0YjktODkzZS00NmRjLThjNmEtMTU2NGUwOTBhOGYwIiwibW9iIjoiKzkxLTU1NTU1NTUiLCJlbWwiOiJ0ZWNoQGtlcm5lbC5maW5hbmNlIiwiaXNzIjoidi10aGVvIiwibmFtZSI6IklsaWEgR29nb3RjaHVyaSIsIm9yZ3MiOlsie1wib2lkXCI6XCJkYTNhOTgzOS1jMDcyLTQ2YjItYWM0Zi02MDFmNzJkMzk2NzRcIixcInByaW1cIjp0cnVlLFwiYWRtXCI6dHJ1ZSxcInNlcnZcIjpbXCJ2c1wiLFwiZ3NwXCIsXCJlYXBpXCJdfSJdLCJleHAiOjE2NzY2NDg3OTYsImlhdCI6MTY3NjY0NTE5Nn0.FwryhaC4EET8EfaFh9LRvLAt0v9yTssLpHPNGOEzGQNvvHS3EXsOfSP7XaQ4-88QFf1IPVwhFsLEaNTnMDIbJsCRE5GZl57m_jz-Ge0XXkQ2evdz3F4dYiQ0GgGXVFAN5mVLXHKVsMZYz9YG7uV2bJg_wd2t5M1HuzOGxXMEczKcwo_VfCmZ-W5SLc0fWwP_GtXthPK3TNeBrkvBtCKuDGvzSEQGeH4oUSUSlm0AnnQpWPmH4EOua9ZfKesUxVwiOcJzvPeONaVXwIQQdhJ-GmYn718w6sXDkW6cDVk9nMVytEL_JTCG4OW98Y1H8cXAXcZgAGXPjy6o8KeZdmGkP_lfYyO7FRwn2Fscnpz4zjuvumw0MqJ2tum9_CnU9EFALWpBVd3P5wSs3wSgp-LW-sRLcXDBtd4iLB14kLP7FoDLb9Q9j_hv3o8btIhxzzxfWJJ8IKzibhIfoL42r1zf5LKVEBRVjBsI2xBe5bquSusKMbYCJ4DIRaaxPQlhABMnG61mXVC2B2fdTsi81SzbKHowy5g6wSQ3VJCeT8DNEtyuRjz5QFMqGfsNCv_vyYIdhxZtFrs24HtM5LY9QSFW2Aww57APvT0C2JAXnhty9vIQADbiHksdHWVMOLdHtNYAjWI3kP-RcqXJ54vcsxFXxxvECuXkFfbQIgvZ-LYy2aY"
+const IsProduction = true
+const OrgID = "da3a9839-c072-46b2-ac4f-601f72d39674"
 
-const GSTIN = "29AAAPI3182M000"
-const TUser = "test_29_000"
-const TPass = "Info21einv#Done"
-const Password = ""
+const GSTIN = "33AAHCE3087B1ZZ"
+const TUser = "Easy_invoicing"
+const TPass = "Easy@2022"
+const Password = "Strawhats16!"
 
 func getGSPClient() GoGST.GSPClient {
 	client, _ := NewDefaultClient(IsProduction, OrgID)
@@ -42,7 +42,7 @@ func TestClient_Ping(t *testing.T) {
 
 func TestClient_Authenticate(t *testing.T) {
 	client, _ := NewDefaultClient(IsProduction, OrgID)
-	err := client.Authenticate("tech+vanaya@kernel.finance", Password)
+	err := client.Authenticate("tech@kernel.finance", Password)
 	if err != nil {
 		t.Error(err)
 	}
@@ -54,7 +54,7 @@ func TestClient_Authenticate(t *testing.T) {
 
 func TestClient_GetGSTINDetails(t *testing.T) {
 	gspC := getGSPClient()
-	resp, err := gspC.GetGSTINDetails("29AAACW4202F1ZM")
+	resp, err := gspC.GetGSTINDetails(GSTIN)
 	if err != nil {
 		t.Error(err)
 	}

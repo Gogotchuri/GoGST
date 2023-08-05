@@ -1,6 +1,7 @@
 package vayana
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gogotchuri/GoGST"
 	"github.com/gogotchuri/GoGST/vayana/encription"
@@ -123,6 +124,44 @@ func (c *client) Authenticate(email, password string) error {
 	c.tokenExpiresAt = time.Now().Add(60 * time.Minute)
 	c.tokenLock.Unlock()
 	return nil
+}
+
+func (c *client) GetPublicGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error) {
+	path := vayanaTypes.SearchTaxPayerEndpoint("v2.0", "v1.3", gstin)
+	destRaw := vayanaTypes.DataResponse{}
+	req, err := c.newRequest(http.MethodGet, c.getEndpointURL(path, false), nil, false)
+	if err != nil {
+		return nil, err
+	}
+	if ok, err := c.IsAuthenticated(); !ok {
+		return nil, fmt.Errorf("token is empty, athenticate first. %s", err.Error())
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
+	req.Header.Set("X-FLYNN-N-USER-TOKEN", c.token)
+	req.Header.Set("X-FLYNN-N-ORG-ID", c.organizationID)
+	if err, _ = c.send(req, &destRaw, false); err != nil {
+		return nil, err
+	}
+	resp := vayanaTypes.GSTINPublicDetails{}
+	if err = json.Unmarshal(destRaw.GetData(), &resp); err != nil {
+		return nil, err
+	}
+	addr := resp.PrimaryAddress.Address
+	line1 := fmt.Sprintf("%s %s %s", addr.FloorNumber, addr.BuildingName, addr.BuildingNumber)
+	line2 := fmt.Sprintf("%s", addr.StreetName)
+	res := &vayanaTypes.GSTINDetails{
+		Gstin:     resp.Gstin,
+		TradeName: resp.TradeName,
+		LegalName: resp.LegalName,
+		Address1:  line1,
+		Address2:  line2,
+		StateCode: resp.PrimaryAddress.Address.StateName,
+		PinCode:   resp.PrimaryAddress.Address.PINCode,
+		TxpType:   resp.TaxPayerType,
+		Status:    resp.GSTINStatus,
+		BlkStatus: resp.EInvoiceStatus,
+	}
+	return res, nil
 }
 
 func (c *client) Logout() error {

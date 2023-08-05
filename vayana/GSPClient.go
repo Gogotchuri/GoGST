@@ -29,7 +29,7 @@ type gspClient struct {
 }
 
 func (c *gspClient) GetGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error) {
-	endpoint := fmt.Sprintf("/basic/ewb/v1.0/v1.03/gstin-details/%s", gstin)
+	endpoint := fmt.Sprintf("/basic/einv/v1.0/nic/eivital/v1.03/Master/gstin/%s", gstin)
 	resp := &vayanaTypes.GSTINDetails{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodGet,
