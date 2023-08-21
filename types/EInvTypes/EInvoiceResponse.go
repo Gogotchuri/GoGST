@@ -3,7 +3,7 @@ package EInvTypes
 import "github.com/gogotchuri/GoGST/types"
 
 type Response struct {
-	AcknowledgementNo int64           `json:"AckNo"`
+	AcknowledgementNo string          `json:"AckNo"`
 	AcknowledgementDt string          `json:"AckDt"`
 	IRN               string          `json:"Irn"`
 	SignedInvoice     string          `json:"SignedInvoice"`
