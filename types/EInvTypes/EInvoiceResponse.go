@@ -2,8 +2,10 @@ package EInvTypes
 
 import "github.com/gogotchuri/GoGST/types"
 
+
+
 type Response struct {
-	AcknowledgementNo string          `json:"AckNo"`
+	AcknowledgementNo types.AmbiguousString          `json:"AckNo"`
 	AcknowledgementDt string          `json:"AckDt"`
 	IRN               string          `json:"Irn"`
 	SignedInvoice     string          `json:"SignedInvoice"`

@@ -6,6 +6,7 @@ import (
 	ewbConsts "github.com/gogotchuri/GoGST/consts"
 	"strconv"
 	"strings"
+	"github.com/gogotchuri/GoGST/types"
 )
 
 var ErrorTokenExpired = fmt.Errorf("err-expired-token")
@@ -47,7 +48,7 @@ type IRPErrorInfo struct {
 	InfCd    string      `json:"InfCd"`
 	Desc     interface{} `json:"Desc"`
 	InfoDesc struct {
-		AckNo int64  `json:"AckNo"`
+		AckNo types.AmbiguousString  `json:"AckNo"`
 		AckDt string `json:"AckDt"`
 		Irn   string `json:"Irn"`
 	} `json:"InfoDesc"`
