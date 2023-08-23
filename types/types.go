@@ -1,8 +1,8 @@
 package types
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 type EWBNumber uint64
@@ -16,6 +16,6 @@ func (as *AmbiguousString) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &item); err != nil {
 		return err
 	}
-	*as = fmt.Sprintf("%v", item)
+	*as = AmbiguousString(fmt.Sprintf("%v", item))
 	return nil
 }
