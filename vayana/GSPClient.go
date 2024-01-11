@@ -2,14 +2,15 @@ package vayana
 
 import (
 	"fmt"
-	"github.com/gogotchuri/GoGST"
-	"github.com/gogotchuri/GoGST/types"
-	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
-	"github.com/gogotchuri/go-validator"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/gogotchuri/GoGST"
+	"github.com/gogotchuri/GoGST/types"
+	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
+	"github.com/gogotchuri/go-validator"
 )
 
 const vayanaBasicEWBBase = "/basic/ewb/v1.0/v1.03"
@@ -21,15 +22,14 @@ type gspClient struct {
 	validationLock *sync.Mutex
 
 	theodoreClient *client
-	httpClient     *http.Client
 
 	creatorGSTIN string
 	username     string
 	password     string
 }
 
-func (c *gspClient) GetGSTINDetails(gstin string) (*vayanaTypes.GSTINDetails, error) {
-	endpoint := fmt.Sprintf("/basic/ewb/v1.0/v1.03/gstin-details/%s", gstin)
+func (c *gspClient) GetTaxPayerDetails(gstin string) (*vayanaTypes.GSTINDetails, error) {
+	endpoint := fmt.Sprintf("/basic/gstn/v3.0/commonapi/v1.3/search?gstin=%s&action=TP", gstin)
 	resp := &vayanaTypes.GSTINDetails{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodGet,

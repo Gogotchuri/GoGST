@@ -5,10 +5,11 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/gogotchuri/GoGST/vayana/encription"
-	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 	"io"
 	"net/http"
+
+	"github.com/gogotchuri/GoGST/vayana/encription"
+	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 )
 
 type request struct {
@@ -20,7 +21,7 @@ type request struct {
 
 func (c *client) getEndpointURL(endpoint string, theodore bool) string {
 	if endpoint == vayanaTypes.HealthCheck {
-		return fmt.Sprintf("%s/%s", c.theodoreBaseURL, endpoint)
+		return fmt.Sprintf("%s%s", c.theodoreBaseURL, endpoint)
 	} else if theodore {
 		return fmt.Sprintf("%s/%s%s", c.theodoreBaseURL, c.apiVersion, endpoint)
 	}
@@ -37,15 +38,16 @@ func (c *client) sendRequest(r request, authenticated bool) error {
 			return fmt.Errorf("token is empty, athenticate first. %s", err.Error())
 		}
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.token))
+		req.Header.Set("X-FLYNN-N-USER-TOKEN", c.token)
+		req.Header.Set("X-FLYNN-N-ORG-ID", c.organizationID)
 	}
 	err, _ = c.send(req, r.dest, false)
 	return err
 }
 
-//send
-/** send makes a request to the API, the response body will be unmarshalled into v,
-which should be correct struct for the given request body passed by reference or
-it can be an io.Writer, in which case the response bytes will be written to it */
+// send makes a request to the API, the response body will be unmarshalled into v,
+// which should be correct struct for the given request body passed by reference or
+// it can be an io.Writer, in which case the response bytes will be written to it
 func (c *client) send(req *http.Request, dest interface{}, decrypt bool) (error, *vayanaTypes.Error) {
 	var (
 		err  error

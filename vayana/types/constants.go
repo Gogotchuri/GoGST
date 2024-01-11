@@ -13,6 +13,7 @@ const (
 	AuthTokens  = "/authtokens"
 	Logout      = "/logout"
 	HealthCheck = "/health"
+	AuthCheck   = "/authtokens/me"
 )
 
 // KEYS

@@ -2,13 +2,14 @@ package vayana
 
 import (
 	"fmt"
+	"net/http"
+	"sync"
+	"time"
+
 	"github.com/gogotchuri/GoGST"
 	"github.com/gogotchuri/GoGST/vayana/encription"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 	"github.com/gogotchuri/go-validator"
-	"net/http"
-	"sync"
-	"time"
 )
 
 var _ GoGST.Client = &client{}
@@ -64,10 +65,18 @@ func (c *client) CreateGSPClient(gstin, username, password string) (GoGST.GSPCli
 		validator:      c.validator,
 		validationLock: c.validationLock,
 		theodoreClient: c,
-		httpClient:     &http.Client{},
 		creatorGSTIN:   gstin,
 		username:       username,
 		password:       password,
+	}, nil
+}
+
+func (c *client) CreateGSTNClient(gstin string) (GoGST.GSPClient, error) {
+	return &gspClient{
+		validator:      c.validator,
+		validationLock: c.validationLock,
+		theodoreClient: c,
+		creatorGSTIN:   gstin,
 	}, nil
 }
 
@@ -77,7 +86,6 @@ func (c *client) CreateGSPEInvoicesClient(gstin, username, password string) (GoG
 		validationLock: c.validationLock,
 
 		theodoreClient: c,
-		httpClient:     &http.Client{},
 		creatorGSTIN:   gstin,
 		username:       username,
 		password:       password,
@@ -96,6 +104,13 @@ func (c *client) Ping() error {
 		method:   http.MethodGet,
 		endpoint: vayanaTypes.HealthCheck,
 	}, false)
+}
+
+func (c *client) AuthenticatedPing() error {
+	return c.sendRequest(request{
+		method:   http.MethodGet,
+		endpoint: vayanaTypes.AuthTokens + "/me",
+	}, true)
 }
 
 const tokenDurationMin = 300

@@ -3,9 +3,11 @@ package vayana
 import (
 	"encoding/json"
 	"fmt"
+
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 )
 
+// TODO fix two error return pattern with errors.Is
 func (c *gspClient) sendRequest(r request) (error, *vayanaTypes.Error) {
 	if ok, err := c.theodoreClient.IsAuthenticated(); !ok {
 		return fmt.Errorf("token is empty, athenticate first. %s", err.Error()), nil
@@ -17,6 +19,8 @@ func (c *gspClient) sendRequest(r request) (error, *vayanaTypes.Error) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.theodoreClient.token))
 	req.Header.Set("X-FLYNN-N-USER-TOKEN", c.theodoreClient.token)
 	req.Header.Set("X-FLYNN-N-ORG-ID", c.theodoreClient.organizationID)
+	req.Header.Set("X-FLYNN-N-GSTIN", c.creatorGSTIN)
+	req.Header.Set("X-FLYNN-N-GSTN-GSP-CODE", "vay")
 
 	req.Header.Set("X-FLYNN-N-IRP-GSTIN", c.creatorGSTIN)
 	req.Header.Set("X-FLYNN-N-IRP-USERNAME", c.username)
@@ -32,7 +36,11 @@ func (c *gspClient) sendRequest(r request) (error, *vayanaTypes.Error) {
 	if err != nil {
 		return err, vErr
 	}
-	err = json.Unmarshal(destRaw.GetData(), r.dest)
+	d, err := destRaw.GetData()
+	if err != nil {
+		return err, nil
+	}
+	err = json.Unmarshal(d, r.dest)
 	if err != nil {
 		return err, nil
 	}
