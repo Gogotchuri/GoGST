@@ -113,7 +113,7 @@ func (c *client) AuthenticatedPing() error {
 	}, true)
 }
 
-const tokenDurationMin = 300
+const tokenDurationMin = 360
 
 func (c *client) Authenticate(email, password string) error {
 	resp := vayanaTypes.AuthResponse{}
@@ -124,7 +124,7 @@ func (c *client) Authenticate(email, password string) error {
 			HandleType:          "email",
 			Handle:              email,
 			Password:            password,
-			TokenDurationInMins: tokenDurationMin + 1,
+			TokenDurationInMins: tokenDurationMin,
 		},
 		dest: &resp,
 	}, false)
