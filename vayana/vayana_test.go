@@ -138,7 +138,7 @@ func TestClient_GenerateEWB(t *testing.T) {
 		return
 	}
 	t.Logf("%+v", resp)
-	ewb, err := gspC.GetEWayBill(resp.EwayBillNo)
+	ewb, err := gspC.GetEWayBill(resp.Data.EwayBillNo)
 	if err != nil {
 		t.Error(err)
 	}
