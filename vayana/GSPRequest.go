@@ -30,7 +30,7 @@ func (c *gspClient) sendRequest(r request) (error, *vayanaTypes.Error) {
 	req.Header.Set("X-FLYNN-N-EWB-GSTIN", c.creatorGSTIN)
 	req.Header.Set("X-FLYNN-N-EWB-USERNAME", c.username)
 	req.Header.Set("X-FLYNN-N-EWB-PWD", c.password)
-	req.Header.Set("X-FLYNN-N-EWB-GSP-CODE", "clayfin")
+	req.Header.Set("X-FLYNN-N-EWB-GSP-CODE", "vay")
 	destRaw := &vayanaTypes.DataResponse{}
 	err, vErr := c.theodoreClient.send(req, destRaw, false)
 	if err != nil {
