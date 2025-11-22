@@ -76,7 +76,26 @@ type EWBCreateRequest struct {
 	VehicleNo     string `json:"vehicleNo"`
 }
 
+// EWBCreateResponseData represents the data object in v3.0 response
+type EWBCreateResponseData struct {
+	EwayBillNo   string `json:"ewayBillNo"`
+	EwayBillDate string `json:"ewayBillDate"`
+	ValidUpto    string `json:"validUpto"`
+	Alert        string `json:"alert"`
+}
+
+// EWBCreateResponse represents the v3.0 API response structure
 type EWBCreateResponse struct {
+	Status         string                 `json:"status"`
+	Data           EWBCreateResponseData  `json:"data"`
+	Error          interface{}            `json:"error"`
+	Info           interface{}            `json:"info"`
+	AdditionalInfo interface{}            `json:"additionalInfo"`
+	Alert          interface{}            `json:"alert"`
+}
+
+// EWBCreateResponseV1 represents the legacy v1.0 API response structure (deprecated)
+type EWBCreateResponseV1 struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
 	Alert   string `json:"alert"`

@@ -13,7 +13,13 @@ import (
 	"github.com/gogotchuri/go-validator"
 )
 
-const vayanaBasicEWBBase = "/basic/ewb/v1.0/v1.03"
+const (
+	// v3.0 API - Current recommended version
+	vayanaEWBVersion    = "v3.0"
+	vayanaEWBAPIVersion = "v1.03"
+	// EWB provider - always use ew1
+	vayanaEWBProvider = "ew1"
+)
 
 var _ GoGST.GSPClient = &gspClient{}
 
@@ -26,6 +32,11 @@ type gspClient struct {
 	creatorGSTIN string
 	username     string
 	password     string
+}
+
+// getEWBBase returns the base path for EWB v3.0 APIs
+func (c *gspClient) getEWBBase() string {
+	return fmt.Sprintf("/basic/eway/%s/%s/%s/ewayapi", vayanaEWBVersion, vayanaEWBProvider, vayanaEWBAPIVersion)
 }
 
 func (c *gspClient) GetTaxPayerDetails(gstin string) (*vayanaTypes.GSTINDetails, error) {
@@ -46,7 +57,7 @@ func (c *gspClient) GetTaxPayerDetails(gstin string) (*vayanaTypes.GSTINDetails,
 }
 
 func (c *gspClient) GetEWayBillsByDate(date time.Time) ([]types.EWBGetResponse, error) {
-	endpoint := vayanaBasicEWBBase + fmt.Sprintf("/by-date/%d/%d/%d", date.Day(), date.Month(), date.Year())
+	endpoint := c.getEWBBase() + fmt.Sprintf("/by-date/%d/%d/%d", date.Day(), date.Month(), date.Year())
 	resp := make([]types.EWBGetResponse, 0)
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodGet,
@@ -57,12 +68,13 @@ func (c *gspClient) GetEWayBillsByDate(date time.Time) ([]types.EWBGetResponse, 
 		if nErr := c.handleError(vErr); nErr != nil {
 			return nil, nErr
 		}
-		return resp, fmt.Errorf("failed to create ewaybill: %s", err)
+		return resp, fmt.Errorf("failed to get ewaybills by date: %s", err)
 	}
 	return resp, nil
 }
+
 func (c *gspClient) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error) {
-	endpoint := vayanaBasicEWBBase + "/gen-ewb"
+	endpoint := c.getEWBBase() + "/gen-ewb"
 	resp := &types.EWBCreateResponse{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodPost,
@@ -80,7 +92,7 @@ func (c *gspClient) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreate
 }
 
 func (c *gspClient) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error) {
-	endpoint := fmt.Sprintf("%s/cancel", vayanaBasicEWBBase)
+	endpoint := c.getEWBBase() + "/cancel"
 	resp := &types.EWBCancelResponse{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodPost,
@@ -98,7 +110,7 @@ func (c *gspClient) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCan
 }
 
 func (c *gspClient) GetEWayBill(ewbNo string) (*types.EWBGetResponse, error) {
-	endpoint := fmt.Sprintf("%s/%s", vayanaBasicEWBBase, ewbNo)
+	endpoint := fmt.Sprintf("%s/%s", c.getEWBBase(), ewbNo)
 	resp := &types.EWBGetResponse{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodGet,
