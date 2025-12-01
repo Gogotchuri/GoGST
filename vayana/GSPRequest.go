@@ -43,17 +43,35 @@ func (c *gspClient) sendRequest(r request) (error, *vayanaTypes.Error) {
 		return err, nil
 	}
 
-	// For EWB create endpoint, d contains only the data object (ewayBillNo, etc)
-	// We need to unmarshal it to the .Data field of EWBCreateResponse
-	if strings.Contains(r.endpoint, "/gen-ewb") {
-		// Type assert to check if it's an EWBCreateResponse
+	// For EWB v3.0 endpoints, d contains only the data object
+	// We need to unmarshal it to the .Data field of the response struct
+	isEWBv3Endpoint := strings.Contains(r.endpoint, "/gen-ewb") || strings.Contains(r.endpoint, "/cancel")
+
+	if isEWBv3Endpoint {
+		// Handle EWBCreateResponse
 		if ewbResp, ok := r.dest.(*types.EWBCreateResponse); ok {
-			// Unmarshal d to the Data field
 			err = json.Unmarshal(d, &ewbResp.Data)
 			if err != nil {
 				return err, nil
 			}
-			// Set status to success
+			ewbResp.Status = "1"
+			return nil, nil
+		}
+		// Handle EWBCancelResponseV3
+		if ewbResp, ok := r.dest.(*types.EWBCancelResponseV3); ok {
+			err = json.Unmarshal(d, &ewbResp.Data)
+			if err != nil {
+				return err, nil
+			}
+			ewbResp.Status = "1"
+			return nil, nil
+		}
+		// Handle EWBGetResponseV3
+		if ewbResp, ok := r.dest.(*types.EWBGetResponseV3); ok {
+			err = json.Unmarshal(d, &ewbResp.Data)
+			if err != nil {
+				return err, nil
+			}
 			ewbResp.Status = "1"
 			return nil, nil
 		}

@@ -94,9 +94,10 @@ func (c *gspClient) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreate
 	return resp, nil
 }
 
-func (c *gspClient) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error) {
+func (c *gspClient) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponseData, error) {
 	endpoint := c.getEWBBase() + "/cancel"
-	resp := &types.EWBCancelResponse{}
+
+	resp := &types.EWBCancelResponseV3{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodPost,
 		endpoint: endpoint,
@@ -109,7 +110,7 @@ func (c *gspClient) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCan
 		}
 		return nil, err
 	}
-	return resp, nil
+	return &resp.Data, nil
 }
 
 func (c *gspClient) GetEWayBill(ewbNo string) (*types.EWBGetResponse, error) {

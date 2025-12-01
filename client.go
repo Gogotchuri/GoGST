@@ -26,7 +26,7 @@ type GSPClient interface {
 	GetTaxPayerDetails(gstin string) (*vayanaTypes.GSTINDetails, error)
 	CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreateResponse, error)
 	GetEWayBill(ewbNo string) (*types.EWBGetResponse, error)
-	CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponse, error)
+	CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCancelResponseData, error)
 	GetEWayBillsByDate(date time.Time) ([]types.EWBGetResponse, error)
 }
 
