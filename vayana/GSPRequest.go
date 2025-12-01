@@ -3,7 +3,9 @@ package vayana
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
+	"github.com/gogotchuri/GoGST/types"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 )
 
@@ -40,6 +42,24 @@ func (c *gspClient) sendRequest(r request) (error, *vayanaTypes.Error) {
 	if err != nil {
 		return err, nil
 	}
+
+	// For EWB create endpoint, d contains only the data object (ewayBillNo, etc)
+	// We need to unmarshal it to the .Data field of EWBCreateResponse
+	if strings.Contains(r.endpoint, "/gen-ewb") {
+		// Type assert to check if it's an EWBCreateResponse
+		if ewbResp, ok := r.dest.(*types.EWBCreateResponse); ok {
+			// Unmarshal d to the Data field
+			err = json.Unmarshal(d, &ewbResp.Data)
+			if err != nil {
+				return err, nil
+			}
+			// Set status to success
+			ewbResp.Status = "1"
+			return nil, nil
+		}
+	}
+
+	// For all other endpoints, unmarshal normally
 	err = json.Unmarshal(d, r.dest)
 	if err != nil {
 		return err, nil
