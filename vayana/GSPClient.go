@@ -132,6 +132,9 @@ func (c *gspClient) handleError(vErr *vayanaTypes.Error) error {
 	}
 	if vErr.IsEWBError() {
 		messages := strings.Join(vErr.GetEwbErrorMessages(), ";")
+		if messages == "" {
+			return nil
+		}
 		return fmt.Errorf("%s", messages)
 	} else if vErr.IsTokenExpired() {
 		return vayanaTypes.ErrorTokenExpired
