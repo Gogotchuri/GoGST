@@ -113,8 +113,9 @@ func (c *gspClient) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCan
 }
 
 func (c *gspClient) GetEWayBill(ewbNo string) (*types.EWBGetResponse, error) {
-	endpoint := fmt.Sprintf("%s/%s", c.getEWBBase(), ewbNo)
-	resp := &types.EWBGetResponse{}
+	endpoint := fmt.Sprintf("%s/GetEwayBill?ewbNo=%s", c.getEWBBase(), ewbNo)
+
+	resp := &types.EWBGetResponseV3{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodGet,
 		endpoint: endpoint,
@@ -126,7 +127,7 @@ func (c *gspClient) GetEWayBill(ewbNo string) (*types.EWBGetResponse, error) {
 		}
 		return nil, err
 	}
-	return resp, nil
+	return &resp.Data, nil
 }
 
 func (c *gspClient) handleError(vErr *vayanaTypes.Error, err error) error {

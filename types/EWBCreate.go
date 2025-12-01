@@ -86,12 +86,12 @@ type EWBCreateResponseData struct {
 
 // EWBCreateResponse represents the v3.0 API response structure
 type EWBCreateResponse struct {
-	Status         string                 `json:"status"`
-	Data           EWBCreateResponseData  `json:"data"`
-	Error          interface{}            `json:"error"`
-	Info           interface{}            `json:"info"`
-	AdditionalInfo interface{}            `json:"additionalInfo"`
-	Alert          interface{}            `json:"alert"`
+	Status         string                `json:"status"`
+	Data           EWBCreateResponseData `json:"data"`
+	Error          interface{}           `json:"error"`
+	Info           interface{}           `json:"info"`
+	AdditionalInfo interface{}           `json:"additionalInfo"`
+	Alert          interface{}           `json:"alert"`
 }
 
 // EWBCreateResponseV1 represents the legacy v1.0 API response structure (deprecated)
@@ -105,6 +105,16 @@ type EWBCreateResponseV1 struct {
 	ValidUpto    string `json:"validUpto"`
 	EwayBillNo   string `json:"ewayBillNo"`
 	EwayBillDate string `json:"ewayBillDate"`
+}
+
+// EWBGetResponseV3 represents the v3.0 API response structure for Get EWB
+type EWBGetResponseV3 struct {
+	Status         string         `json:"status"`
+	Data           EWBGetResponse `json:"data"`
+	Error          interface{}    `json:"error"`
+	Info           interface{}    `json:"info"`
+	AdditionalInfo interface{}    `json:"additionalInfo"`
+	Alert          interface{}    `json:"alert"`
 }
 
 type EWBGetResponse struct {
