@@ -1,13 +1,16 @@
 package vayana
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/gogotchuri/GoGST"
+	ewbConsts "github.com/gogotchuri/GoGST/consts"
 	"github.com/gogotchuri/GoGST/types"
 	vayanaTypes "github.com/gogotchuri/GoGST/vayana/types"
 	"github.com/gogotchuri/go-validator"
@@ -48,7 +51,7 @@ func (c *gspClient) GetTaxPayerDetails(gstin string) (*vayanaTypes.GSTINDetails,
 		dest:     resp,
 	})
 	if err != nil {
-		if nErr := c.handleError(vErr); nErr != nil {
+		if nErr := c.handleError(vErr, err); nErr != nil {
 			return nil, nErr
 		}
 		return nil, err
@@ -65,7 +68,7 @@ func (c *gspClient) GetEWayBillsByDate(date time.Time) ([]types.EWBGetResponse, 
 		dest:     &resp,
 	})
 	if err != nil {
-		if nErr := c.handleError(vErr); nErr != nil {
+		if nErr := c.handleError(vErr, err); nErr != nil {
 			return nil, nErr
 		}
 		return resp, fmt.Errorf("failed to get ewaybills by date: %s", err)
@@ -83,7 +86,7 @@ func (c *gspClient) CreateEWaybill(ewb types.EWBCreateRequest) (*types.EWBCreate
 		dest:     resp,
 	})
 	if err != nil {
-		if nErr := c.handleError(vErr); nErr != nil {
+		if nErr := c.handleError(vErr, err); nErr != nil {
 			return nil, nErr
 		}
 		return resp, fmt.Errorf("failed to create ewaybill: %s", err)
@@ -101,7 +104,7 @@ func (c *gspClient) CancelEWaybill(cancel types.EWBCancelRequest) (*types.EWBCan
 		dest:     resp,
 	})
 	if err != nil {
-		if nErr := c.handleError(vErr); nErr != nil {
+		if nErr := c.handleError(vErr, err); nErr != nil {
 			return nil, nErr
 		}
 		return nil, err
@@ -118,7 +121,7 @@ func (c *gspClient) GetEWayBill(ewbNo string) (*types.EWBGetResponse, error) {
 		dest:     resp,
 	})
 	if err != nil {
-		if nErr := c.handleError(vErr); nErr != nil {
+		if nErr := c.handleError(vErr, err); nErr != nil {
 			return nil, nErr
 		}
 		return nil, err
@@ -126,20 +129,70 @@ func (c *gspClient) GetEWayBill(ewbNo string) (*types.EWBGetResponse, error) {
 	return resp, nil
 }
 
-func (c *gspClient) handleError(vErr *vayanaTypes.Error) error {
-	if vErr == nil {
-		return nil
-	}
-	if vErr.IsEWBError() {
-		messages := strings.Join(vErr.GetEwbErrorMessages(), ";")
-		if messages == "" {
-			return nil
+func (c *gspClient) handleError(vErr *vayanaTypes.Error, err error) error {
+	// Check vErr first (existing logic)
+	if vErr != nil {
+		if vErr.IsEWBError() {
+			messages := strings.Join(vErr.GetEwbErrorMessages(), ";")
+			if messages != "" {
+				return fmt.Errorf("%s", messages)
+			}
+		} else if vErr.IsTokenExpired() {
+			return vayanaTypes.ErrorTokenExpired
+		} else if vErr.IsIRPError() || vErr.IsInvalidBodyError() {
+			return vErr
 		}
-		return fmt.Errorf("%s", messages)
-	} else if vErr.IsTokenExpired() {
-		return vayanaTypes.ErrorTokenExpired
-	} else if vErr.IsIRPError() || vErr.IsInvalidBodyError() {
-		return vErr
 	}
+
+	// Parse error string for embedded JSON error codes
+	if err != nil {
+		errStr := err.Error()
+		// Find the JSON part (starts with {)
+		jsonStart := strings.Index(errStr, "{")
+		if jsonStart >= 0 {
+			jsonStr := errStr[jsonStart:]
+			// Parse the JSON error response
+			var errorResponse struct {
+				Status string `json:"status"`
+				Error  struct {
+					Message string `json:"message"`
+					Type    string `json:"type"`
+					Args    struct {
+						Details []struct {
+							ErrorCode    string  `json:"ErrorCode"`
+							ErrorMessage *string `json:"ErrorMessage"`
+						} `json:"details"`
+					} `json:"args"`
+				} `json:"error"`
+				Info string `json:"info"`
+			}
+
+			if jsonErr := json.Unmarshal([]byte(jsonStr), &errorResponse); jsonErr == nil {
+				// Check if error has error codes in details
+				if len(errorResponse.Error.Args.Details) > 0 {
+					var messages []string
+					for _, detail := range errorResponse.Error.Args.Details {
+						code, parseErr := strconv.Atoi(detail.ErrorCode)
+						if parseErr == nil {
+							if msg, ok := ewbConsts.ErrorCodes[code]; ok {
+								messages = append(messages, fmt.Sprintf("[%s] %s", detail.ErrorCode, msg))
+							} else {
+								messages = append(messages, fmt.Sprintf("[%s] Unknown error code", detail.ErrorCode))
+							}
+						}
+					}
+					if len(messages) > 0 {
+						result := fmt.Sprintf("GST Errors: %s", strings.Join(messages, "; "))
+						if errorResponse.Info != "" {
+							result += fmt.Sprintf(" | Info: %s", strings.TrimPrefix(errorResponse.Info, ", "))
+						}
+						return fmt.Errorf("%s", result)
+					}
+				}
+			}
+		}
+		return err
+	}
+
 	return nil
 }

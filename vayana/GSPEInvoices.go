@@ -2,9 +2,10 @@ package vayana
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gogotchuri/GoGST"
 	"github.com/gogotchuri/GoGST/types/EInvTypes"
-	"net/http"
 )
 
 var _ GoGST.GSPEInvoiceClient = &gspClient{}
@@ -27,7 +28,7 @@ func (c *gspClient) CreateEInvoice(eInv EInvTypes.EInvoiceCreate) (*EInvTypes.Re
 		dest:     resp,
 	})
 	if err != nil {
-		if nErr := c.handleError(vErr); nErr != nil {
+		if nErr := c.handleError(vErr, err); nErr != nil {
 			return nil, nErr
 		}
 		return resp, fmt.Errorf("failed to create e-invoice: %s", err)
@@ -44,7 +45,7 @@ func (c *gspClient) GetEInvoice(irn string) (*EInvTypes.Response, error) {
 		dest:     resp,
 	})
 	if err != nil {
-		if nErr := c.handleError(vErr); nErr != nil {
+		if nErr := c.handleError(vErr, err); nErr != nil {
 			return nil, nErr
 		}
 		return resp, fmt.Errorf("failed to create e-invoice: %s", err)
