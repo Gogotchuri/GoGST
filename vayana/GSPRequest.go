@@ -45,7 +45,7 @@ func (c *gspClient) sendRequest(r request) (error, *vayanaTypes.Error) {
 
 	// For EWB v3.0 endpoints, d contains only the data object
 	// We need to unmarshal it to the .Data field of the response struct
-	isEWBv3Endpoint := strings.Contains(r.endpoint, "/gen-ewb") || strings.Contains(r.endpoint, "/cancel")
+	isEWBv3Endpoint := strings.Contains(r.endpoint, "/gen-ewb") || strings.Contains(r.endpoint, "/cancel") || strings.Contains(r.endpoint, "/GetEwayBill")
 
 	if isEWBv3Endpoint {
 		// Handle EWBCreateResponse
