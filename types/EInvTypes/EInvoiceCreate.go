@@ -23,7 +23,7 @@ type TransactionDetails struct {
 
 type DocumentDetails struct {
 	Type       string `json:"Typ" default:"INV" validate:"oneof='INV' 'CRN' 'DBN'"`
-	DocumentNo string `json:"No"  validate:"alphanum,min=1,max=16,startsnotwith=0,startsnotwith=/,startsnotwith=-"`
+	DocumentNo string `json:"No"  validate:"min=1,max=16,startsnotwith=0,startsnotwith=/,startsnotwith=-"`
 	Date       string `json:"Dt"  validate:"date_format=02/01/2006"`
 }
 
