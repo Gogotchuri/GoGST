@@ -10,7 +10,18 @@ import (
 
 var _ GoGST.GSPEInvoiceClient = &gspClient{}
 
-const vayanaBasicEInvBase = "/basic/einv/v1.0/nic/eicore/v1.03/Invoice"
+const (
+	// v3.0 API - Current recommended version
+	vayanaEInvVersion    = "v3.0"
+	vayanaEInvAPIVersion = "v1.03"
+	// EInv provider - ni1 replaces deprecated nic
+	vayanaEInvProvider = "ni1"
+)
+
+// getEInvBase returns the base path for E-Invoice v3.0 APIs
+func (c *gspClient) getEInvBase() string {
+	return fmt.Sprintf("/basic/einv/%s/%s/eicore/%s/Invoice", vayanaEInvVersion, vayanaEInvProvider, vayanaEInvAPIVersion)
+}
 
 func (c *gspClient) CreateEInvoice(eInv EInvTypes.EInvoiceCreate) (*EInvTypes.Response, error) {
 	c.validationLock.Lock()
@@ -19,7 +30,7 @@ func (c *gspClient) CreateEInvoice(eInv EInvTypes.EInvoiceCreate) (*EInvTypes.Re
 	if validationError != nil {
 		return nil, validationError
 	}
-	endpoint := vayanaBasicEInvBase
+	endpoint := c.getEInvBase()
 	resp := &EInvTypes.Response{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodPost,
@@ -37,7 +48,7 @@ func (c *gspClient) CreateEInvoice(eInv EInvTypes.EInvoiceCreate) (*EInvTypes.Re
 }
 
 func (c *gspClient) GetEInvoice(irn string) (*EInvTypes.Response, error) {
-	endpoint := fmt.Sprintf("%s/irn/%s", vayanaBasicEInvBase, irn)
+	endpoint := fmt.Sprintf("%s/irn/%s", c.getEInvBase(), irn)
 	resp := &EInvTypes.Response{}
 	err, vErr := c.sendRequest(request{
 		method:   http.MethodGet,
