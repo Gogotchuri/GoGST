@@ -195,7 +195,7 @@ type EWBDetails struct {
 	TransName  string `json:"TransName" validate:"omitempty,min=3,max=100"`
 	Distance   int    `json:"Distance" validate:"omitempty,min=0,max=9999999999"`
 	TransMode  string `json:"TransMode" validate:"omitempty,min=1,max=1,oneof=1 2 3 4"`
-	TransDocNo string `json:"TransDocNo" validate:"omitempty,min=1,max=15,alphanum"`
+	TransDocNo string `json:"TransDocNo" validate:"omitempty,min=1,max=15"`
 	TransDocDt string `json:"TransDocDt" validate:"omitempty,date_format=02/01/2006"`
 	VehNo      string `json:"VehNo" validate:"omitempty,min=4,max=20,alphanum"`
 	VehType    string `json:"VehType" validate:"omitempty,min=1,max=1,oneof=R O"`
