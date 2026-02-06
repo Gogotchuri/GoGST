@@ -141,7 +141,13 @@ func (c *gspClient) handleError(vErr *vayanaTypes.Error, err error) error {
 			}
 		} else if vErr.IsTokenExpired() {
 			return vayanaTypes.ErrorTokenExpired
-		} else if vErr.IsIRPError() || vErr.IsInvalidBodyError() {
+		} else if vErr.IsIRPError() {
+			messages := vErr.GetIRPErrorMessages()
+			if len(messages) > 0 {
+				return fmt.Errorf("IRP Errors: %s", strings.Join(messages, "; "))
+			}
+			return vErr
+		} else if vErr.IsInvalidBodyError() {
 			return vErr
 		}
 	}

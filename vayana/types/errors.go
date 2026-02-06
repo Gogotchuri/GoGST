@@ -26,12 +26,13 @@ func (e Error) Error() string {
 }
 
 type ErrorArgs struct {
-	IRPErrors     IRPError `json:"irp-err"`
-	ErrorLocation string   `json:"errorLocation"`
-	ParameterName string   `json:"parameter-name"`
-	Status        string   `json:"status"`
-	ErrorText     string   `json:"error-text"`
-	ErrorCodes    []int    `json:"error-codes"`
+	IRPErrors     IRPError         `json:"irp-err"`
+	Details       []IRPErrorDetail `json:"details"` // v3.0 IRP errors: args.details directly
+	ErrorLocation string           `json:"errorLocation"`
+	ParameterName string           `json:"parameter-name"`
+	Status        string           `json:"status"`
+	ErrorText     string           `json:"error-text"`
+	ErrorCodes    []int            `json:"error-codes"`
 }
 
 type IRPError struct {
@@ -64,7 +65,12 @@ func (e Error) IsIRPError() bool {
 
 func (e Error) GetIRPErrorMessages() []string {
 	var messages []string
+	// v1.0 format: args.irp-err.details
 	for _, detail := range e.Args.IRPErrors.Details {
+		messages = append(messages, detail.ErrorMessage)
+	}
+	// v3.0 format: args.details
+	for _, detail := range e.Args.Details {
 		messages = append(messages, detail.ErrorMessage)
 	}
 	return messages
