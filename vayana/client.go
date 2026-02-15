@@ -99,6 +99,12 @@ func (c *client) SetActiveToken(token string) {
 	c.tokenLock.Unlock()
 }
 
+func (c *client) GetActiveToken() string {
+	c.tokenLock.Lock()
+	defer c.tokenLock.Unlock()
+	return c.token
+}
+
 func (c *client) Ping() error {
 	return c.sendRequest(request{
 		method:   http.MethodGet,

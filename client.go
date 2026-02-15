@@ -15,6 +15,7 @@ type Client interface {
 	Authenticate(email, password string) error
 	IsAuthenticated() (bool, error)
 	SetActiveToken(token string)
+	GetActiveToken() string
 	Logout() error
 
 	CreateGSTNClient(gstin string) (GSPClient, error)
